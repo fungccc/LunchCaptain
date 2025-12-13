@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LunchCaptain V3.15</title>
+    <title>LunchCaptain V3.16</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
@@ -31,25 +31,14 @@
         .step-desc { @apply text-xs text-gray-500 mb-3 block ml-8 leading-relaxed; }
 
         .option-tag { 
-            border: 1px solid #d1d5db;
-            background-color: white;
-            color: #4b5563;
-            border-radius: 0.5rem;
-            padding: 0.5rem;
-            font-size: 0.875rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            user-select: none;
+            border: 1px solid #d1d5db; background-color: white; color: #4b5563;
+            border-radius: 0.5rem; padding: 0.5rem; font-size: 0.875rem; font-weight: bold;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; user-select: none;
         }
         .option-tag.active { 
-            background-color: #2563eb !important;
-            color: white !important;
-            border-color: #2563eb !important;
-            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
+            background-color: #2563eb !important; color: white !important;
+            border-color: #2563eb !important; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3);
         }
         .check-icon { display: none; margin-right: 4px; font-size: 0.8em; }
         .option-tag.active .check-icon { display: inline-block; }
@@ -71,11 +60,8 @@
         }
 
         #orderQRCode {
-            min-height: 180px;
-            min-width: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 180px; min-width: 180px;
+            display: flex; align-items: center; justify-content: center;
         }
     </style>
 </head>
@@ -88,7 +74,7 @@
             </div>
             <div>
                 <h1 class="text-lg font-bold tracking-wide leading-tight">LunchCaptain</h1>
-                <p class="text-[10px] text-gray-400">團長救星 v3.15</p>
+                <p class="text-[10px] text-gray-400">團長救星 v3.16</p>
             </div>
         </div>
         <div id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></div>
@@ -114,17 +100,34 @@
 
             <div class="card">
                 <label class="step-label"><span class="step-num">1</span> 菜單要翻譯嗎？</label>
-                <span class="step-desc">如果公司有外籍同事，AI 可以順便把菜單翻譯成第二語言。</span>
                 <select id="secondLang" class="w-full p-3 border rounded-lg text-sm custom-select bg-gray-50 focus:bg-white outline-none">
                     <option value="">🚫 不需翻譯 (預設)</option>
                     <option value="Traditional Chinese">1. 中文 (繁體)</option>
                     <option value="English">2. 英文</option>
-                    </select>
+                    <option value="Japanese">3. 日文</option>
+                    <option value="Korean">4. 韓文</option>
+                    <option value="Thai">5. 泰文</option>
+                    <option value="Vietnamese">6. 越南文</option>
+                    <option value="French">7. 法文</option>
+                    <option value="Italian">8. 義大利文</option>
+                    <option value="Spanish">9. 西班牙文</option>
+                    <option value="German">10. 德文</option>
+                    <option value="Portuguese">11. 葡萄牙文</option>
+                    <option value="Russian">12. 俄文</option>
+                    <option value="Arabic">13. 阿拉伯文</option>
+                    <option value="Indonesian">14. 印尼文</option>
+                    <option value="Tagalog">15. 他加祿文</option>
+                    <option value="Turkish">16. 土耳其文</option>
+                    <option value="Persian">17. 波斯文</option>
+                    <option value="Hindi">18. 印地文</option>
+                    <option value="Bengali">19. 孟加拉文</option>
+                    <option value="Swahili">20. 斯瓦希里文</option>
+                    <option value="Czech">21. 捷克文</option>
+                </select>
             </div>
 
             <div class="card">
                 <label class="step-label"><span class="step-num">2</span> 選擇 AI 幫手</label>
-                <span class="step-desc">我們會將「讀取菜單圖片」的任務指派給它。</span>
                 <div class="grid grid-cols-2 gap-2">
                     <button onclick="setAI('gemini')" id="btn-gemini" class="btn btn-primary text-xs py-3 ring-2 ring-offset-1 ring-blue-600"><i class="fas fa-star mr-2"></i>Gemini</button>
                     <button onclick="setAI('chatgpt')" id="btn-chatgpt" class="btn btn-success text-xs py-3 opacity-60"><i class="fas fa-bolt mr-2"></i>ChatGPT</button>
@@ -135,7 +138,6 @@
 
             <div class="card border-l-4 border-l-indigo-500">
                 <label class="step-label"><span class="step-num bg-indigo-100 text-indigo-800">3</span> 啟動 AI 分析</label>
-                <span class="step-desc">點擊下方按鈕，自動複製指令並跳轉 AI。請在 AI 內<b>貼上指令</b>並<b>上傳菜單照片</b>。</span>
                 <button onclick="copyPromptAndOpenAI()" class="w-full btn btn-action shadow-lg">
                     <i class="fas fa-external-link-alt mr-2"></i> 複製指令 ➔ 跳轉 AI 上傳照片
                 </button>
@@ -143,7 +145,6 @@
 
             <div class="card">
                 <label class="step-label"><span class="step-num">4</span> 貼上 AI 回傳資料</label>
-                <span class="step-desc">請將 AI 產生的 JSON 代碼全部複製並貼在下面。</span>
                 <div class="relative">
                     <textarea id="jsonInput" rows="3" class="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-xs focus:border-blue-500 transition bg-gray-50" placeholder="在此長按貼上..."></textarea>
                     <button onclick="pasteFromClipboard()" class="absolute top-2 right-2 bg-white border border-gray-200 p-1 px-2 rounded text-gray-600 text-xs shadow-sm">
@@ -163,6 +164,11 @@
             <div class="flex justify-center mb-6">
                 <div id="menuQRCode" class="p-3 bg-white rounded-xl shadow-lg border border-gray-100"></div>
             </div>
+            
+            <button onclick="shareMenuWhatsapp()" class="btn btn-success w-full mb-3">
+                <i class="fab fa-whatsapp mr-2"></i> 掃不到？傳連結給同事
+            </button>
+
             <button onclick="enterCaptainMode()" class="btn btn-warning w-full shadow-md text-base">
                 <i class="fas fa-user-tie mr-2"></i> 我是團長，進入收單模式
             </button>
@@ -246,13 +252,10 @@
                     <div id="orderQRCode" class="p-2 bg-white rounded border border-gray-200 mb-2"></div>
                     <p class="text-xs text-center text-gray-400">請截圖保存，或直接讓團長掃描</p>
                 </div>
-                
                 <div class="bg-gray-50 p-3 rounded border border-gray-200 mt-2">
                     <p class="text-[10px] text-gray-500 mb-1">若 QR CODE 無法顯示，請複製代碼：</p>
                     <textarea id="ticket-raw-code" class="w-full h-12 text-[10px] p-1 border rounded resize-none bg-white text-gray-600 break-all" readonly></textarea>
-                    <button onclick="copyTicketCode()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs py-1 rounded mt-1">
-                        <i class="fas fa-copy mr-1"></i>複製代碼
-                    </button>
+                    <button onclick="copyTicketCode()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs py-1 rounded mt-1"><i class="fas fa-copy mr-1"></i>複製代碼</button>
                 </div>
             </div>
             
@@ -260,9 +263,7 @@
                 <button onclick="downloadTicket()" class="btn btn-dark text-sm"><i class="fas fa-download mr-2"></i>下載圖片</button>
                 <button onclick="sendToWhatsapp()" class="btn btn-success text-sm"><i class="fab fa-whatsapp mr-2"></i>傳給團長</button>
             </div>
-            <button onclick="shareTicketCode()" class="btn btn-action w-full max-w-sm mb-3 text-sm">
-                <i class="fas fa-share-alt mr-2"></i> 系統分享 (Line/Email)
-            </button>
+            <button onclick="shareTicketCode()" class="btn btn-action w-full max-w-sm mb-3 text-sm"><i class="fas fa-share-alt mr-2"></i> 系統分享 (Line/Email)</button>
             <button onclick="document.getElementById('ticket-modal').classList.add('hidden')" class="text-white underline text-sm mt-2 mb-10">關閉</button>
         </div>
 
@@ -323,24 +324,15 @@
         let tempItem = null; 
         let userInfo = { name: '', phone: '' };
         let isCaptainMode = false;
+        // 選項壓縮字典
+        const optMap = { "少辣":"a", "中辣":"b", "大辣":"c", "走冰":"d", "少冰":"e", "多冰":"f", "走甜":"g", "少甜":"h", "半糖":"i", "走奶":"j", "走蔥":"k", "走芫荽":"l" };
+        const revOptMap = Object.fromEntries(Object.entries(optMap).map(a => a.reverse()));
+
+        window.addEventListener('beforeunload', function (e) { if (myCart.length > 0) { e.preventDefault(); e.returnValue = ''; } });
+        function confirmHome() { if(myCart.length > 0 && !confirm("購物車還有餐點，確定要回到首頁嗎？")) return; location.href = location.pathname.split('#')[0]; }
         
-        // 防手殘
-        window.addEventListener('beforeunload', function (e) {
-            if (myCart.length > 0) { e.preventDefault(); e.returnValue = ''; }
-        });
-        function confirmHome() {
-            if(myCart.length > 0 && !confirm("購物車還有餐點，確定要回到首頁嗎？")) return;
-            location.href = location.pathname.split('#')[0];
-        }
-        
-        // 初始化
         window.onload = function() {
-            if(window.location.hash === "#import_menu") {
-                document.getElementById('setup-panel').scrollIntoView();
-                document.getElementById('jsonInput').focus();
-                history.replaceState(null, null, ' ');
-                // V3.15: 移除了彈窗，只聚焦
-            }
+            if(window.location.hash === "#import_menu") { document.getElementById('setup-panel').scrollIntoView(); document.getElementById('jsonInput').focus(); history.replaceState(null, null, ' '); }
             const params = new URLSearchParams(window.location.search);
             const compressedMenu = params.get('menu');
             if (compressedMenu) initGuestMode(compressedMenu);
@@ -354,13 +346,9 @@
         }
         function toggleHistory() { document.getElementById('historySection').classList.toggle('hidden'); }
 
-        // AI 相關
         function setAI(ai) {
             currentAI = ai;
-            ['gemini','chatgpt','grok','copilot'].forEach(k => {
-                const btn = document.getElementById(`btn-${k}`);
-                if(btn) { btn.classList.remove('ring-2', 'ring-offset-1', 'ring-blue-600', 'opacity-100'); btn.classList.add('opacity-60'); }
-            });
+            ['gemini','chatgpt','grok','copilot'].forEach(k => { const btn = document.getElementById(`btn-${k}`); if(btn) { btn.classList.remove('ring-2', 'ring-offset-1', 'ring-blue-600', 'opacity-100'); btn.classList.add('opacity-60'); } });
             const activeBtn = document.getElementById(`btn-${currentAI}`);
             if(activeBtn) { activeBtn.classList.remove('opacity-60'); activeBtn.classList.add('ring-2', 'ring-offset-1', 'ring-blue-600', 'opacity-100'); }
         }
@@ -368,15 +356,11 @@
         function copyPromptAndOpenAI() {
             const returnUrl = window.location.href.split('#')[0].split('?')[0] + "#import_menu";
             const targetLang = document.getElementById('secondLang').value;
-            let trans = `field "n" MUST be the ORIGINAL language in image (DO NOT Translate "n").`;
+            let trans = `field "n" MUST be the ORIGINAL language in image.`;
             let fields = `"n":"Original Name", "p":Price_Number`;
-            if (targetLang) {
-                trans += ` Also, add field "t" which is the translation of "n" into ${targetLang}.`;
-                fields += `, "t":"Translated Name in ${targetLang}"`;
-            }
-            let prompt = `Role: Menu Data Analyst. Task: Analyze menu image. Output: Strict JSON ONLY. JSON Structure: {"r":"Restaurant Name","m":[{"c":"Category Name","i":[{${fields}}]}]} Rules: 1. ${trans} 2. "p" must be number. 3. Size options = separate items. 4. AFTER JSON, append new line with: [↩️ Click here to Import Menu](${returnUrl})`;
-            if(currentAI === 'grok') prompt += `\n\n(Note: Grok App users pls switch to browser)`;
-
+            if (targetLang) { trans += ` Also add "t" (translation to ${targetLang}).`; fields += `, "t":"Translated Name"`; }
+            let prompt = `Role: Menu Data Analyst. Output: Strict JSON ONLY. Structure: {"r":"Restaurant","m":[{"c":"Category","i":[{${fields}}]}]} Rules: 1. ${trans} 2. "p" is number. 3. Sizes=separate items. 4. Append link: [↩️ Click here to Import Menu](${returnUrl})`;
+            if(currentAI === 'grok') prompt += `\n\n(Grok users: switch to browser)`;
             navigator.clipboard.writeText(prompt).then(() => {
                 let url = "https://gemini.google.com/";
                 if(currentAI === 'chatgpt') url = "https://chat.openai.com/";
@@ -386,28 +370,19 @@
             });
         }
 
-        async function pasteFromClipboard() {
-            try { document.getElementById('jsonInput').value = await navigator.clipboard.readText(); } 
-            catch (err) { Swal.fire('提示', '瀏覽器阻擋自動貼上，請手動長按輸入框貼上', 'info'); }
-        }
+        async function pasteFromClipboard() { try { document.getElementById('jsonInput').value = await navigator.clipboard.readText(); } catch (e) { Swal.fire('提示', '請手動貼上', 'info'); } }
 
         function parseMenuAndGenerateLink() {
             const raw = document.getElementById('jsonInput').value;
-            if(!raw) return Swal.fire('錯誤', '請先貼上 JSON', 'error');
+            if(!raw) return Swal.fire('錯誤', '請貼上 JSON', 'error');
             try {
                 const jsonMatch = raw.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) throw new Error("找不到 JSON");
+                if (!jsonMatch) throw new Error("無效 JSON");
                 menuData = JSON.parse(jsonMatch[0]);
                 if (!menuData.m) throw new Error("格式錯誤");
-                
-                // V3.15: 自動分配 ID (編碼)
-                let globalIdx = 0;
-                menuData.m.forEach(cat => {
-                    cat.i.forEach(item => {
-                        item._id = globalIdx++; // 分配唯一 ID
-                    });
-                });
-
+                // V3.16: 自動分配 ID
+                let gId = 0;
+                menuData.m.forEach(c => c.i.forEach(i => i._id = (gId++).toString(36))); // Base36 ID
                 saveToHistory(menuData);
                 generateLinkAndShow();
             } catch (e) { Swal.fire('解析失敗', e.message, 'error'); }
@@ -421,22 +396,23 @@
             loadHistoryDropdown();
         }
         function loadHistoryDropdown() {
-            const history = JSON.parse(localStorage.getItem('lunch_captain_history') || "[]");
-            const select = document.getElementById('historySelect');
-            if(history.length > 0) {
+            const h = JSON.parse(localStorage.getItem('lunch_captain_history') || "[]");
+            const s = document.getElementById('historySelect');
+            if(h.length > 0) {
                 document.getElementById('historySection').classList.remove('hidden');
-                select.innerHTML = '<option value="">-- 請選擇 --</option>';
-                history.forEach((h, index) => select.innerHTML += `<option value="${index}">${h.name} (${new Date(h.time).toLocaleDateString()})</option>`);
+                s.innerHTML = '<option value="">-- 請選擇 --</option>';
+                h.forEach((item, i) => s.innerHTML += `<option value="${i}">${item.name}</option>`);
             }
         }
         function loadFromHistory(idx) {
             if(idx === "") return;
             menuData = JSON.parse(localStorage.getItem('lunch_captain_history'))[idx].data;
+            // 確保舊資料也有 ID
+            let gId = 0;
+            menuData.m.forEach(c => c.i.forEach(i => { if(!i._id) i._id = (gId++).toString(36); else gId++; }));
             generateLinkAndShow();
         }
-        function clearHistory() {
-            if(confirm('清除紀錄？')) { localStorage.removeItem('lunch_captain_history'); location.reload(); }
-        }
+        function clearHistory() { if(confirm('清除紀錄？')) { localStorage.removeItem('lunch_captain_history'); location.reload(); } }
 
         function generateLinkAndShow() {
             const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(menuData));
@@ -446,6 +422,12 @@
             new QRCode(qr, { text: shareUrl, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.L });
             document.getElementById('setup-panel').classList.add('hidden');
             document.getElementById('share-panel').classList.remove('hidden');
+        }
+        
+        function shareMenuWhatsapp() {
+            const compressed = LZString.compressToEncodedURIComponent(JSON.stringify(menuData));
+            const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressed}`;
+            window.location.href = `whatsapp://send?text=${encodeURIComponent("來點餐吧！" + shareUrl)}`;
         }
 
         function enterCaptainMode() {
@@ -483,337 +465,211 @@
 
         function renderMenu() {
             document.getElementById('storeName').textContent = menuData.r || "餐廳";
-            const container = document.getElementById('menuContainer'); container.innerHTML = "";
+            const c = document.getElementById('menuContainer'); c.innerHTML = "";
             menuData.m.forEach(cat => {
-                const section = document.createElement('div'); section.className = "mb-6";
-                section.innerHTML = `<h3 class="font-bold text-gray-800 border-l-4 border-blue-600 pl-3 mb-3 sticky top-[4.5rem] bg-[#f0f2f5] z-20 py-2">${cat.c}</h3>`;
-                const grid = document.createElement('div'); grid.className = "grid grid-cols-1 gap-3";
+                const s = document.createElement('div'); s.className = "mb-6";
+                s.innerHTML = `<h3 class="font-bold text-gray-800 border-l-4 border-blue-600 pl-3 mb-3 sticky top-[4.5rem] bg-[#f0f2f5] z-20 py-2">${cat.c}</h3>`;
+                const g = document.createElement('div'); g.className = "grid grid-cols-1 gap-3";
                 cat.i.forEach(item => {
                     const el = document.createElement('div');
-                    el.className = "bg-white p-4 rounded-xl shadow-sm flex justify-between items-center cursor-pointer hover:bg-blue-50 transition border border-transparent hover:border-blue-200 active:scale-[0.98]";
+                    el.className = "bg-white p-4 rounded-xl shadow-sm flex justify-between items-center cursor-pointer active:scale-[0.98]";
                     el.onclick = () => openNoteModal(item);
-                    const subName = item.t ? `<div class="text-xs text-gray-500 mt-1">${item.t}</div>` : '';
-                    el.innerHTML = `<div><div class="text-gray-800 font-bold">${item.n}</div>${subName}</div><span class="font-bold text-blue-600 text-lg">$${item.p}</span>`;
-                    grid.appendChild(el);
+                    el.innerHTML = `<div><div class="text-gray-800 font-bold">${item.n}</div>${item.t ? `<div class="text-xs text-gray-500">${item.t}</div>` : ''}</div><span class="font-bold text-blue-600 text-lg">$${item.p}</span>`;
+                    g.appendChild(el);
                 });
-                section.appendChild(grid); container.appendChild(section);
+                s.appendChild(g); c.appendChild(s);
             });
         }
 
-        // --- 備註 Modal ---
         function openNoteModal(item) {
             tempItem = item;
             document.getElementById('note-item-name').textContent = item.n;
             document.getElementById('note-item-trans').textContent = item.t || '';
             document.getElementById('note-item-price').textContent = `$${item.p}`;
-            const container = document.getElementById('opt-container'); container.innerHTML = "";
-            const options = ["少辣", "中辣", "大辣", "走冰", "少冰", "多冰", "走甜", "少甜", "正常", "走奶", "走蔥", "走芫荽"];
-            options.forEach(opt => {
-                container.innerHTML += `<div class="option-tag" onclick="toggleOption(this)"><i class="fas fa-check check-icon"></i><span>${opt}</span></div>`;
-            });
-            const otherBtn = document.getElementById('btn-other'); if(otherBtn) otherBtn.classList.remove('active');
-            const input = document.getElementById('note-other-input'); input.value = ""; input.disabled = true; input.classList.add('bg-gray-50'); input.classList.remove('bg-white');
+            const c = document.getElementById('opt-container'); c.innerHTML = "";
+            const opts = ["少辣", "中辣", "大辣", "走冰", "少冰", "多冰", "走甜", "少甜", "半糖", "走奶", "走蔥", "走芫荽"];
+            opts.forEach(o => c.innerHTML += `<div class="option-tag" onclick="toggleOption(this)"><i class="fas fa-check check-icon"></i><span>${o}</span></div>`);
+            document.getElementById('note-other-input').value = "";
             document.getElementById('note-modal').classList.remove('hidden');
         }
         function closeNoteModal() { document.getElementById('note-modal').classList.add('hidden'); tempItem = null; }
         function toggleOption(el) { el.classList.toggle('active'); }
         function toggleOther(el) {
-            el.classList.toggle('active');
-            const input = document.getElementById('note-other-input');
-            input.disabled = !el.classList.contains('active');
-            input.classList.toggle('bg-white', !input.disabled);
-            input.classList.toggle('bg-gray-50', input.disabled);
-            if (!input.disabled) input.focus();
+            el.classList.toggle('active'); const i = document.getElementById('note-other-input');
+            i.disabled = !el.classList.contains('active'); i.classList.toggle('bg-white', !i.disabled); i.classList.toggle('bg-gray-50', i.disabled); if(!i.disabled) i.focus();
         }
         function confirmAddItem() {
             if (!tempItem) return;
             let notes = [];
-            document.querySelectorAll('.option-tag.active').forEach(tag => { const t = tag.innerText.trim(); if(t!=='其他') notes.push(t); });
+            document.querySelectorAll('.option-tag.active').forEach(tag => { 
+                const t = tag.innerText.trim();
+                // V3.16: 編碼化
+                notes.push(optMap[t] || t);
+            });
             const other = document.getElementById('note-other-input').value.trim(); if(other) notes.push(other);
-            // V3.15: 儲存時包含 _id
-            myCart.push({ _id: tempItem._id, n: tempItem.n, p: tempItem.p, o: notes.join(', ') });
+            myCart.push({ _id: tempItem._id, n: tempItem.n, p: tempItem.p, o: notes.join(',') });
             updateCartBadge(); closeNoteModal();
-            const Toast = Swal.mixin({toast: true, position: 'top', showConfirmButton: false, timer: 1000});
-            Toast.fire({icon: 'success', title: '已加入購物車'});
+            Swal.fire({icon: 'success', title: '已加入', timer: 800, showConfirmButton: false});
         }
         function updateCartBadge() {
             const count = myCart.length; document.getElementById('cartCount').innerText = count;
             document.getElementById('cartCount').style.display = count > 0 ? 'flex' : 'none';
         }
 
-        // --- 結算 ---
         async function checkOut() {
-            if (myCart.length === 0) return Swal.fire('購物車空的', '請先點選餐點', 'warning');
-            
+            if (myCart.length === 0) return Swal.fire('購物車空的', '請先點餐', 'warning');
             if (!userInfo.name || !userInfo.phone) {
                 const { value: vals } = await Swal.fire({
-                    title: '請輸入訂購人資料',
+                    title: '訂購人資料',
                     html: `<input id="swal-1" class="swal2-input" placeholder="名字" value="${userInfo.name||''}"><input id="swal-2" class="swal2-input" type="tel" placeholder="電話後3碼" value="${userInfo.phone||''}">`,
                     focusConfirm: false, allowOutsideClick: false, preConfirm: () => {
-                        const n = document.getElementById('swal-input1').value, p = document.getElementById('swal-2').value;
-                        if (!n || !p) { Swal.showValidationMessage('請填寫完整資料'); return false; }
-                        return [n, p];
+                        const n = document.getElementById('swal-1').value, p = document.getElementById('swal-2').value;
+                        if (!n || !p) { Swal.showValidationMessage('請填寫完整資料'); return false; } return [n, p];
                     }
                 });
-                if (vals) {
-                    userInfo.name = vals[0]; userInfo.phone = vals[1];
-                    localStorage.setItem('lunch_captain_user', JSON.stringify(userInfo));
-                    updateUserDisplay();
-                    openCartModal();
-                }
-            } else {
-                openCartModal();
-            }
+                if (vals) { userInfo.name = vals[0]; userInfo.phone = vals[1]; localStorage.setItem('lunch_captain_user', JSON.stringify(userInfo)); updateUserDisplay(); openCartModal(); }
+            } else openCartModal();
         }
 
         function openCartModal() {
-            const list = document.getElementById('cart-list'); list.innerHTML = "";
-            let total = 0;
+            const list = document.getElementById('cart-list'); list.innerHTML = ""; let total = 0;
             myCart.forEach((item, idx) => {
                 total += item.p;
-                list.innerHTML += `
-                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100">
-                        <div class="flex-1">
-                            <div class="font-bold text-gray-800 text-sm">${item.n}</div>
-                            ${item.o ? `<div class="text-xs text-orange-500">${item.o}</div>` : ''}
-                            <div class="text-xs text-blue-600 font-bold">$${item.p}</div>
-                        </div>
-                        <button onclick="removeFromCart(${idx})" class="text-red-400 hover:text-red-600 p-2"><i class="fas fa-trash-alt"></i></button>
-                    </div>`;
+                // 解碼顯示
+                const noteDisplay = item.o.split(',').map(c => revOptMap[c] || c).filter(c=>c).join(', ');
+                list.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 mb-2"><div class="flex-1"><div class="font-bold text-gray-800 text-sm">${item.n}</div><div class="text-xs text-orange-500">${noteDisplay}</div><div class="text-xs text-blue-600 font-bold">$${item.p}</div></div><button onclick="removeFromCart(${idx})" class="text-red-400 p-2"><i class="fas fa-trash-alt"></i></button></div>`;
             });
             document.getElementById('cart-total-price').textContent = `$${total}`;
-            
-            const hint = document.getElementById('cart-action-hint');
-            const btn = document.getElementById('btn-final-submit');
-            
+            const hint = document.getElementById('cart-action-hint'); const btn = document.getElementById('btn-final-submit');
             if (isCaptainMode) {
-                hint.innerText = "團長：確認無誤 ➔ 加入總表";
-                hint.className = "text-xs text-center text-blue-600 font-bold bg-blue-50 py-2 rounded mb-3 border border-blue-100";
-                btn.innerHTML = '<i class="fas fa-plus-circle mr-1"></i> 加入總表';
-                btn.className = "btn text-sm text-lg shadow-lg animate-pulse text-white bg-blue-600 hover:bg-blue-700"; 
+                hint.innerText = "團長：確認無誤 ➔ 加入總表"; hint.className = "text-xs text-center text-blue-600 font-bold bg-blue-50 py-2 rounded mb-3 border border-blue-100";
+                btn.innerHTML = '加入總表'; btn.className = "btn text-sm text-lg shadow-lg animate-pulse text-white bg-blue-600"; 
             } else {
-                hint.innerText = "同事：確認無誤 ➔ 生成 QR CODE";
-                hint.className = "text-xs text-center text-green-600 font-bold bg-green-50 py-2 rounded mb-3 border border-green-100";
-                btn.innerHTML = '<i class="fas fa-qrcode mr-1"></i> 生成 QR CODE';
-                btn.className = "btn text-sm text-lg shadow-lg animate-pulse text-white bg-green-600 hover:bg-green-700"; 
+                hint.innerText = "同事：確認無誤 ➔ 生成 QR CODE"; hint.className = "text-xs text-center text-green-600 font-bold bg-green-50 py-2 rounded mb-3 border border-green-100";
+                btn.innerHTML = '生成 QR CODE'; btn.className = "btn text-sm text-lg shadow-lg animate-pulse text-white bg-green-600"; 
             }
-
             document.getElementById('cart-modal').classList.remove('hidden');
         }
-
         function closeCartModal() { document.getElementById('cart-modal').classList.add('hidden'); }
-
-        function removeFromCart(idx) {
-            myCart.splice(idx, 1);
-            updateCartBadge();
-            if (myCart.length === 0) { closeCartModal(); Swal.fire('已清空', '購物車內沒有餐點了', 'info'); }
-            else openCartModal();
-        }
-
+        function removeFromCart(idx) { myCart.splice(idx, 1); updateCartBadge(); if(myCart.length===0) closeCartModal(); else openCartModal(); }
+        
         function finalSubmit() {
             closeCartModal();
             if (isCaptainMode) {
-                // V3.15: 團長合併時也需轉換格式，但因為是本地直接加，直接用 myCart 結構即可
-                // 不過為了統一，我們可以模擬成"接收到的訂單"
-                // 這裡簡單處理：將 myCart 內的項目 (含 _id) 直接加進去
-                const orderData = { n: userInfo.name, t: userInfo.phone, d: [...myCart] };
-                const key = `${orderData.n}-${orderData.t}`;
-                addOrderToSystem(key, orderData); 
-                myCart = []; updateCartBadge();
-                Swal.fire('成功', '團長訂單已加入總結', 'success');
-            } else {
-                generateOrderTicket();
-            }
+                // 團長也是用 _id 邏輯
+                const items = myCart.map(m => ({ i: m._id, o: m.o })); // 模擬 payload 結構
+                addOrderToSystem(`${userInfo.name}-${userInfo.phone}`, { n:userInfo.name, t:userInfo.phone, d:items });
+                myCart = []; updateCartBadge(); Swal.fire('成功', '已加入總表', 'success');
+            } else generateOrderTicket();
         }
 
-        // --- 共用功能 ---
-        function updateUserDisplay() {
-            document.getElementById('displayRoleName').textContent = userInfo.name;
-            document.getElementById('displayRolePhone').textContent = userInfo.phone;
-            document.getElementById('guestInfoDisplay').classList.remove('hidden');
-        }
-        function resetGuestInfo() {
-            userInfo = { name: '', phone: '' }; localStorage.removeItem('lunch_captain_user');
-            document.getElementById('guestInfoDisplay').classList.add('hidden'); Swal.fire('已重置', '下次點餐請重新輸入資料', 'info');
-        }
-        
-        // V3.15: 產生輕量化 Payload (使用 _id)
+        // V3.16 核心：產生極簡 Payload
         function generateOrderTicket() {
             let total = 0;
-            // 視覺清單 (給人看)
             const itemsHtml = myCart.map(i => {
                 total += i.p;
-                return `<div class="border-b pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>${i.o ? `<span class="text-xs text-orange-500">└ ${i.o}</span>` : ''}</div>`;
+                const displayNote = i.o.split(',').map(c => revOptMap[c] || c).join(', ');
+                return `<div class="border-b pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div><span class="text-xs text-orange-500">${displayNote}</span></div>`;
             }).join("");
             
-            // 核心變更：傳輸清單 (給機器看) - 只傳 ID 和 備註
-            // Payload 結構: {n:名, t:電, d:[{i:ID, o:備註}]}
-            const payloadItems = myCart.map(item => ({ i: item._id, o: item.o }));
-            const orderPayload = { n: userInfo.name, t: userInfo.phone, d: payloadItems };
-            const orderStr = JSON.stringify(orderPayload);
-            
+            // Payload: [Name, Phone, [[ID, Notes], ...]]
+            const simpleItems = myCart.map(m => [m._id, m.o]); 
+            const payload = [userInfo.name, userInfo.phone, simpleItems];
+            const orderStr = JSON.stringify(payload);
+
             document.getElementById('ticket-store').textContent = menuData.r;
             document.getElementById('ticket-name').textContent = userInfo.name;
             document.getElementById('ticket-phone').textContent = userInfo.phone;
             document.getElementById('ticket-items').innerHTML = itemsHtml;
             document.getElementById('ticket-total').textContent = "$" + total;
             document.getElementById('ticket-raw-code').value = orderStr;
-            
             document.getElementById('ticket-modal').classList.remove('hidden');
             
-            const qrContainer = document.getElementById('orderQRCode');
-            qrContainer.innerHTML = "";
-            setTimeout(() => {
-                try {
-                    new QRCode(qrContainer, { text: orderStr, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.L });
-                } catch(e) {
-                    qrContainer.innerHTML = "<p class='text-red-500 text-xs'>QR 生成失敗</p>";
-                }
-            }, 300);
-        }
-        
-        function copyTicketCode() {
-            const code = document.getElementById('ticket-raw-code');
-            code.select();
-            document.execCommand("copy");
-            Swal.fire('已複製', '請傳給團長', 'success');
+            const qr = document.getElementById('orderQRCode'); qr.innerHTML = "";
+            setTimeout(() => new QRCode(qr, { text: orderStr, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.L }), 100);
         }
 
-        function shareTicketCode() {
-            if (navigator.share) {
-                navigator.share({
-                    title: '點餐單',
-                    text: document.getElementById('ticket-raw-code').value
-                }).catch(console.error);
-            } else {
-                Swal.fire('不支援', '請使用複製按鈕', 'info');
-            }
-        }
-
-        function downloadTicket() {
-            html2canvas(document.getElementById('ticket-content')).then(cvs => {
-                const a = document.createElement('a'); a.download = `Order_${userInfo.name}.png`; a.href = cvs.toDataURL(); a.click();
-            });
-        }
-        
-        function sendToWhatsapp() {
-            const url = `whatsapp://send?text=${encodeURIComponent(document.getElementById('ticket-raw-code').value)}`;
-            window.location.href = url;
-        }
-
-        // --- 團長掃描 ---
-        function startScanner() {
-            document.getElementById('scanner-modal').classList.remove('hidden');
-            html5QrcodeScanner = new Html5Qrcode("reader");
-            html5QrcodeScanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess);
-        }
-        function stopScanner() {
-            if (html5QrcodeScanner) html5QrcodeScanner.stop().then(() => {
-                document.getElementById('scanner-modal').classList.add('hidden'); html5QrcodeScanner = null;
-            }); else document.getElementById('scanner-modal').classList.add('hidden');
-        }
-        function manualImportOrder() {
-            const val = document.getElementById('manualOrderInput').value.trim();
-            if(val) onScanSuccess(val, null);
-            document.getElementById('manualOrderInput').value = "";
-        }
-        
+        // V3.16: 解析極簡 Payload
         function onScanSuccess(decodedText) {
             try {
-                const payload = JSON.parse(decodedText);
-                if (!payload.n || !payload.d) throw new Error();
+                let order = {};
+                const data = JSON.parse(decodedText);
                 
-                // V3.15: 還原訂單 (Rehydrate)
-                // 將傳來的 {i: ID, o: Note} 還原成完整 {n: Name, p: Price, o: Note}
-                const rehydratedItems = [];
-                // 建立 ID 對照表
-                const idMap = {};
-                menuData.m.forEach(cat => cat.i.forEach(item => idMap[item._id] = item));
+                // 判斷是否為 V3.16 陣列格式
+                if (Array.isArray(data)) {
+                    order = { n: data[0], t: data[1], d: data[2].map(x => ({ i: x[0], o: x[1] })) };
+                } else {
+                    order = data; // 相容舊版 JSON
+                }
 
-                payload.d.forEach(pItem => {
-                    const originalItem = idMap[pItem.i];
-                    if(originalItem) {
-                        rehydratedItems.push({
-                            n: originalItem.n,
-                            p: originalItem.p,
-                            o: pItem.o // 使用訂單中的備註
-                        });
-                    }
-                });
-
-                // 建構標準訂單格式
-                const order = {
-                    n: payload.n,
-                    t: payload.t,
-                    d: rehydratedItems
-                };
-
+                if (!order.n || !order.d) throw new Error();
                 if(html5QrcodeScanner) html5QrcodeScanner.pause();
-                const key = `${order.n}-${order.t}`;
                 
-                // 自動合併
-                addOrderToSystem(key, order);
-                Swal.fire({icon: 'success', title: `${order.n} 訂單已加入`, timer: 1000, showConfirmButton: false});
+                addOrderToSystem(`${order.n}-${order.t}`, order);
+                Swal.fire({icon: 'success', title: `${order.n} 已加入`, timer: 1000, showConfirmButton: false});
                 if(html5QrcodeScanner) html5QrcodeScanner.resume();
-                
-            } catch (e) { if(!html5QrcodeScanner) Swal.fire("無效代碼", "格式錯誤", "error"); }
+            } catch (e) { if(!html5QrcodeScanner) Swal.fire("格式錯誤", "請確認代碼", "error"); }
         }
 
-        function addOrderToSystem(key, order) {
-            if (allOrders[key]) {
-                allOrders[key].d = allOrders[key].d.concat(order.d);
-            } else {
-                order.paid = false;
-                allOrders[key] = order;
-            }
+        // 共用與掃描
+        function updateUserDisplay() { document.getElementById('displayRoleName').textContent = userInfo.name; document.getElementById('displayRolePhone').textContent = userInfo.phone; document.getElementById('guestInfoDisplay').classList.remove('hidden'); }
+        function resetGuestInfo() { userInfo = { name: '', phone: '' }; localStorage.removeItem('lunch_captain_user'); document.getElementById('guestInfoDisplay').classList.add('hidden'); Swal.fire('已重置', '請重新輸入資料', 'info'); }
+        function copyTicketCode() { const c = document.getElementById('ticket-raw-code'); c.select(); document.execCommand("copy"); Swal.fire('已複製', '', 'success'); }
+        function shareTicketCode() { if(navigator.share) navigator.share({title:'點餐單', text:document.getElementById('ticket-raw-code').value}); else Swal.fire('不支援', '請複製', 'info'); }
+        function downloadTicket() { html2canvas(document.getElementById('ticket-content')).then(c => { const a = document.createElement('a'); a.download = `Order.png`; a.href = c.toDataURL(); a.click(); }); }
+        function sendToWhatsapp() { window.location.href = `whatsapp://send?text=${encodeURIComponent(document.getElementById('ticket-raw-code').value)}`; }
+        function startScanner() { document.getElementById('scanner-modal').classList.remove('hidden'); html5QrcodeScanner = new Html5Qrcode("reader"); html5QrcodeScanner.start({facingMode:"environment"}, {fps:10, qrbox:250}, onScanSuccess); }
+        function stopScanner() { if(html5QrcodeScanner) html5QrcodeScanner.stop().then(() => { document.getElementById('scanner-modal').classList.add('hidden'); html5QrcodeScanner=null; }); else document.getElementById('scanner-modal').classList.add('hidden'); }
+        function manualImportOrder() { const v = document.getElementById('manualOrderInput').value.trim(); if(v) onScanSuccess(v); document.getElementById('manualOrderInput').value = ""; }
+
+        function addOrderToSystem(key, orderData) {
+            // 需要將 ID 轉回完整資料供總表顯示
+            // 建立 ID 對照表
+            const idMap = {};
+            menuData.m.forEach(c => c.i.forEach(it => idMap[it._id] = it));
+            
+            const fullItems = orderData.d.map(item => {
+                const ref = idMap[item.i];
+                if (!ref) return null;
+                // 解碼選項
+                const noteDisplay = (item.o || "").split(',').map(c => revOptMap[c] || c).filter(c=>c).join(', ');
+                return { n: ref.n, p: ref.p, o: noteDisplay };
+            }).filter(i => i);
+
+            if (allOrders[key]) allOrders[key].d = allOrders[key].d.concat(fullItems);
+            else allOrders[key] = { n: orderData.n, paid: false, d: fullItems };
+            
             updateOrderBadge();
             if(!document.getElementById('summary-panel').classList.contains('hidden')) showSummary();
         }
-        
-        function updateOrderBadge() {
-            const count = Object.keys(allOrders).length; document.getElementById('orderCountBadge').innerText = count;
-            document.getElementById('orderCountBadge').style.display = count > 0 ? 'flex' : 'none';
-        }
 
-        // --- 總結 ---
+        // 其他功能同前...
+        function updateOrderBadge() { const c = Object.keys(allOrders).length; document.getElementById('orderCountBadge').innerText = c; document.getElementById('orderCountBadge').style.display = c>0?'flex':'none'; }
         function showSummary() {
-            const container = document.getElementById('summary-content'); container.innerHTML = "";
-            let grandTotal = 0; const keys = Object.keys(allOrders);
-            const addBtn = document.createElement('button');
-            addBtn.className = "w-full border-2 border-dashed border-gray-300 text-gray-500 p-3 rounded-lg mb-4 text-sm hover:border-blue-500 flex items-center justify-center";
-            addBtn.innerHTML = `<span><i class='fas fa-plus mr-2'></i> 手動輸入代碼</span>`;
-            addBtn.onclick = () => { document.getElementById('summary-panel').classList.add('hidden'); startScanner(); };
-            container.appendChild(addBtn);
-
-            if (keys.length === 0) container.innerHTML += `<div class='text-center text-gray-400 mt-8'>尚無訂單</div>`;
-            else {
-                keys.forEach(key => {
-                    const order = allOrders[key];
-                    const sub = order.d.reduce((s, i) => s + i.p, 0); grandTotal += sub;
-                    const items = order.d.map(i => `<div class='flex justify-between text-sm text-gray-600 pl-3 border-l-2 border-gray-100 py-1'><span>${i.n} ${i.o?`<span class='text-orange-500 text-xs'>(${i.o})</span>`:''}</span><span>$${i.p}</span></div>`).join("");
-                    container.innerHTML += `<div class="p-4 rounded-xl border-2 mb-3 ${order.paid?'bg-green-50 border-green-200':'bg-white border-gray-100'}"><div class="flex justify-between items-center mb-2"><div class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-green-600" ${order.paid?'checked':''} onchange="togglePaid('${key}')"><span class="font-bold text-lg ${order.paid?'text-green-700 line-through':''}">${order.n}</span></div><span class="font-bold text-blue-600">$${sub}</span></div>${items}</div>`;
-                });
-            }
-            document.getElementById('grand-total').textContent = "$" + grandTotal;
-            document.getElementById('summary-panel').classList.remove('hidden');
+            const c = document.getElementById('summary-content'); c.innerHTML = ""; let gt = 0;
+            const addBtn = document.createElement('button'); addBtn.className = "w-full border-2 border-dashed border-gray-300 text-gray-500 p-3 rounded-lg mb-4 text-sm hover:border-blue-500 flex items-center justify-center";
+            addBtn.innerHTML = `<span><i class='fas fa-plus mr-2'></i> 手動輸入代碼</span>`; addBtn.onclick = () => { document.getElementById('summary-panel').classList.add('hidden'); startScanner(); };
+            c.appendChild(addBtn);
+            Object.entries(allOrders).forEach(([k, o]) => {
+                const sub = o.d.reduce((s, i) => s + i.p, 0); gt += sub;
+                const items = o.d.map(i => `<div class='flex justify-between text-sm text-gray-600 pl-3 border-l-2 border-gray-100 py-1'><span>${i.n} ${i.o?`<span class='text-orange-500 text-xs'>(${i.o})</span>`:''}</span><span>$${i.p}</span></div>`).join("");
+                c.innerHTML += `<div class="p-4 rounded-xl border-2 mb-3 ${o.paid?'bg-green-50 border-green-200':'bg-white border-gray-100'}"><div class="flex justify-between items-center mb-2"><div class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 accent-green-600" ${o.paid?'checked':''} onchange="togglePaid('${k}')"><span class="font-bold text-lg ${o.paid?'text-green-700 line-through':''}">${o.n}</span></div><span class="font-bold text-blue-600">$${sub}</span></div>${items}</div>`;
+            });
+            document.getElementById('grand-total').textContent = "$" + gt; document.getElementById('summary-panel').classList.remove('hidden');
         }
-        function togglePaid(key) { if(allOrders[key]) { allOrders[key].paid = !allOrders[key].paid; showSummary(); } }
+        function togglePaid(k) { if(allOrders[k]) { allOrders[k].paid = !allOrders[k].paid; showSummary(); } }
         function copyForRestaurant() {
-            let sum = {}; let total = 0;
-            Object.values(allOrders).forEach(o => o.d.forEach(i => { const k=i.n+(i.o?` (${i.o})`:''); if(!sum[k]) sum[k]={c:0,p:i.p}; sum[k].c++; total+=i.p; }));
-            let txt = `📅 訂單：${menuData.r}\n━━━━━━━━━━━━\n`; for(const[n,d]of Object.entries(sum)) txt+=`${n} x ${d.c}\n`; txt+=`━━━━━━━━━━━━\n💰 總金額：$${total}`;
+            let sum = {}; let t = 0; Object.values(allOrders).forEach(o => o.d.forEach(i => { const k=i.n+(i.o?` (${i.o})`:''); if(!sum[k]) sum[k]={c:0,p:i.p}; sum[k].c++; t+=i.p; }));
+            let txt = `📅 訂單：${menuData.r}\n━━━━━━━━━━━━\n`; for(const[n,d]of Object.entries(sum)) txt+=`${n} x ${d.c}\n`; txt+=`━━━━━━━━━━━━\n💰 總金額：$${t}`;
             window.location.href = `whatsapp://send?text=${encodeURIComponent(txt)}`;
         }
         function copyForGroup() {
-            let txt = `📋 收錢 (${menuData.r})\n━━━━━━━━━━━━\n`; let total = 0; let paid = 0;
-            Object.values(allOrders).forEach(o => { const sub=o.d.reduce((s,i)=>s+i.p,0); total+=sub; if(o.paid)paid++; txt+=`${o.paid?'✅':'⬜'} ${o.n}: $${sub}\n`; });
-            txt+=`━━━━━━━━━━━━\n💰 總計: $${total}\n(已付:${paid}/未付:${Object.keys(allOrders).length-paid})`;
-            navigator.clipboard.writeText(txt).then(() => Swal.fire('已複製', '可貼到 Line', 'success'));
+            let txt = `📋 收錢 (${menuData.r})\n━━━━━━━━━━━━\n`; let t = 0; let p = 0;
+            Object.values(allOrders).forEach(o => { const s=o.d.reduce((a,b)=>a+b.p,0); t+=s; if(o.paid)p++; txt+=`${o.paid?'✅':'⬜'} ${o.n}: $${s}\n`; });
+            txt+=`━━━━━━━━━━━━\n💰 總計: $${t}\n(已付:${p}/未付:${Object.keys(allOrders).length-p})`;
+            navigator.clipboard.writeText(txt).then(() => Swal.fire('已複製', '', 'success'));
         }
-        async function shareSystem() {
-            if (navigator.share) await navigator.share({ title: '點餐', text: `餐廳：${menuData.r}`, url: window.location.href });
-            else Swal.fire('不支援', '無分享功能', 'info');
-        }
+        async function shareSystem() { if(navigator.share) await navigator.share({title:'點餐', text:`餐廳:${menuData.r}`, url:window.location.href}); else Swal.fire('不支援', '', 'info'); }
     </script>
 </body>
 </html>
