@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LunchCaptain V3.3</title>
+    <title>LunchCaptain V3.4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
@@ -43,9 +43,9 @@
 <body class="pb-32 flex flex-col min-h-screen">
 
     <header class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50 flex justify-between items-center">
-        <h1 class="text-lg font-bold tracking-wider cursor-pointer flex items-center" onclick="location.href=location.pathname.split('#')[0]">
+        <h1 class="text-lg font-bold tracking-wider cursor-pointer flex items-center" onclick="confirmHome()">
             <i class="fas fa-utensils mr-2 text-yellow-400"></i>LunchCaptain
-            <span class="ml-2 text-[10px] bg-blue-600 px-1.5 py-0.5 rounded text-white font-normal opacity-80">v3.3</span>
+            <span class="ml-2 text-[10px] bg-blue-600 px-1.5 py-0.5 rounded text-white font-normal opacity-80">v3.4</span>
         </h1>
         <div id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></div>
     </header>
@@ -76,6 +76,20 @@
                     <option value="Thai">5. 泰文</option>
                     <option value="Vietnamese">6. 越南文</option>
                     <option value="French">7. 法文</option>
+                    <option value="Italian">8. 義大利文</option>
+                    <option value="Spanish">9. 西班牙文</option>
+                    <option value="German">10. 德文</option>
+                    <option value="Portuguese">11. 葡萄牙文</option>
+                    <option value="Russian">12. 俄文</option>
+                    <option value="Arabic">13. 阿拉伯文</option>
+                    <option value="Indonesian">14. 印尼文</option>
+                    <option value="Tagalog">15. 他加祿文</option>
+                    <option value="Turkish">16. 土耳其文</option>
+                    <option value="Persian">17. 波斯文</option>
+                    <option value="Hindi">18. 印地文</option>
+                    <option value="Bengali">19. 孟加拉文</option>
+                    <option value="Swahili">20. 斯瓦希里文</option>
+                    <option value="Czech">21. 捷克文</option>
                 </select>
             </div>
 
@@ -163,16 +177,22 @@
                 </div>
                 
                 <div class="p-4 overflow-y-auto">
-                    <p class="text-xs font-bold text-gray-500 mb-2">辣度 / 冰塊 / 甜度 / 其他</p>
+                    <p class="text-xs font-bold text-gray-500 mb-2">客製化選項 (可多選)</p>
                     <div class="flex flex-wrap gap-2 mb-4" id="opt-container">
-                        <span class="option-tag" onclick="toggleOption(this)">微辣</span>
-                        <span class="option-tag" onclick="toggleOption(this)">不辣</span>
+                        <span class="option-tag" onclick="toggleOption(this)">少辣</span>
+                        <span class="option-tag" onclick="toggleOption(this)">中辣</span>
+                        <span class="option-tag" onclick="toggleOption(this)">大辣</span>
+                        <span class="option-tag" onclick="toggleOption(this)">走蔥</span>
                         <span class="option-tag" onclick="toggleOption(this)">少冰</span>
-                        <span class="option-tag" onclick="toggleOption(this)">微糖</span>
-                        <span class="option-tag" onclick="toggleOption(this, true)">走蔥</span>
+                        <span class="option-tag" onclick="toggleOption(this)">多冰</span>
+                        <span class="option-tag" onclick="toggleOption(this)">走冰</span>
+                        <span class="option-tag" onclick="toggleOption(this)">少甜</span>
+                        <span class="option-tag" onclick="toggleOption(this)">半糖</span>
+                        <span class="option-tag" onclick="toggleOption(this)">走甜</span>
+                        <span class="option-tag" onclick="toggleOption(this)">走奶</span>
                         <span class="option-tag" onclick="toggleOther(this)">其他...</span>
                     </div>
-                    <input type="text" id="note-other-input" class="w-full p-2 border rounded text-sm hidden bg-gray-50" placeholder="備註內容...">
+                    <input type="text" id="note-other-input" class="w-full p-2 border rounded text-sm hidden bg-gray-50" placeholder="請輸入備註內容...">
                 </div>
 
                 <div class="p-4 border-t bg-gray-50 flex gap-2">
@@ -263,7 +283,7 @@
 
     <footer class="text-center text-gray-400 text-xs py-6 mt-auto footer-sign border-t bg-white">
         <p class="font-bold text-gray-500">LunchCaptain • 團長救星</p>
-        <p class="opacity-50 text-[10px]">V3.3 AI Powered</p>
+        <p class="opacity-50 text-[10px]">V3.4 AI Powered</p>
     </footer>
 
     <script>
@@ -275,7 +295,27 @@
         let html5QrcodeScanner = null;
         let tempItem = null; 
         let userInfo = { name: '', phone: '' };
-        let isCaptainMode = false; // 新增：判斷是否為團長模式
+        let isCaptainMode = false;
+        
+        // 🛡️ 防止手滑離開頁面
+        window.addEventListener('beforeunload', function (e) {
+            // 只有當購物車有東西，且還沒送出(購物車未清空)時才警告
+            if (myCart.length > 0) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        // 點擊標題回首頁的保護
+        function confirmHome() {
+            if(myCart.length > 0) {
+                if(confirm("您有點餐尚未儲存，確定要回到首頁嗎？")) {
+                    location.href = location.pathname.split('#')[0];
+                }
+            } else {
+                location.href = location.pathname.split('#')[0];
+            }
+        }
         
         // --- 1. 初始化 ---
         window.onload = function() {
@@ -307,7 +347,6 @@
         }
 
         // --- 2. AI 指令區 ---
-        
         function setAI(ai) {
             currentAI = ai;
             ['gemini','chatgpt','grok','copilot'].forEach(k => {
@@ -376,7 +415,6 @@ Rules:
             if(!raw) return Swal.fire('錯誤', '請先貼上 JSON', 'error');
 
             try {
-                // 核心解析邏輯：保留原有的 regex
                 const jsonMatch = raw.match(/\{[\s\S]*\}/);
                 if (!jsonMatch) throw new Error("找不到 JSON 區塊");
                 const cleanJson = jsonMatch[0];
@@ -390,7 +428,7 @@ Rules:
             }
         }
 
-        // --- 歷史紀錄 (同前) ---
+        // --- 歷史紀錄 ---
         function saveToHistory(data) {
             let history = JSON.parse(localStorage.getItem('lunch_captain_history') || "[]");
             history = history.filter(h => h.name !== data.r);
@@ -441,15 +479,14 @@ Rules:
         }
 
         function enterCaptainMode() {
-            isCaptainMode = true; // 標記為團長
+            isCaptainMode = true; 
             document.getElementById('roleBadge').textContent = "團長模式";
             document.getElementById('roleBadge').classList.remove('hidden');
             document.getElementById('share-panel').classList.add('hidden');
             document.getElementById('order-panel').classList.remove('hidden');
             document.getElementById('captain-fab').classList.remove('hidden');
-            document.getElementById('guest-fab').classList.remove('hidden'); // 團長也可以點餐
+            document.getElementById('guest-fab').classList.remove('hidden'); 
             
-            // 團長預設名字
             userInfo.name = "團長";
             userInfo.phone = "000";
             updateUserDisplay();
@@ -530,11 +567,7 @@ Rules:
             tempItem = null;
         }
 
-        function toggleOption(el, allowMultiple = false) {
-            if (!allowMultiple) {
-                const parent = el.parentElement;
-                parent.querySelectorAll('.option-tag').forEach(tag => tag.classList.remove('active'));
-            }
+        function toggleOption(el, allowMultiple = true) {
             el.classList.toggle('active');
         }
 
@@ -574,42 +607,46 @@ Rules:
             badge.classList.add('scale-100');
         }
 
-        // --- 4. 結算 (修復與優化) ---
+        // --- 4. 結算 (修復版) ---
         
         async function checkOut() {
             if (myCart.length === 0) return Swal.fire('購物車空的', '請先點餐', 'warning');
 
-            // 確保有個人資料，如果沒有則強制彈窗
+            // 檢查個人資料
             if (!userInfo.name || !userInfo.phone) {
+                // 強制彈出輸入框
                 const { value: formValues } = await Swal.fire({
                     title: '請輸入訂購人資料',
                     html:
                         '<input id="swal-input1" class="swal2-input" placeholder="你的名字" value="' + (userInfo.name || '') + '">' +
                         '<input id="swal-input2" class="swal2-input" type="tel" placeholder="電話後3碼" value="' + (userInfo.phone || '') + '">',
                     focusConfirm: false,
+                    allowOutsideClick: false, // 禁止點外面關閉
                     preConfirm: () => {
-                        return [
-                            document.getElementById('swal-input1').value,
-                            document.getElementById('swal-input2').value
-                        ]
+                        const n = document.getElementById('swal-input1').value;
+                        const p = document.getElementById('swal-input2').value;
+                        if (!n || !p) {
+                            Swal.showValidationMessage('請填寫完整資料');
+                            return false;
+                        }
+                        return [n, p];
                     }
                 });
 
                 if (formValues) {
-                    if(!formValues[0] || !formValues[1]) return Swal.fire('資料不完整', '請填寫名字與電話', 'error');
                     userInfo.name = formValues[0];
                     userInfo.phone = formValues[1];
                     localStorage.setItem('lunch_captain_user', JSON.stringify(userInfo));
                     updateUserDisplay();
-                    processOrder(); // 資料填完後處理訂單
+                    processOrder();
                 }
             } else {
-                processOrder(); // 已有資料直接處理
+                processOrder();
             }
         }
 
         function processOrder() {
-            // 關鍵修改：如果是團長模式，直接加入訂單，不顯示 QR
+            // 如果是團長，直接加入；如果是同事，顯示 QR
             if (isCaptainMode) {
                 Swal.fire({
                     title: '團長訂單確認',
@@ -621,14 +658,15 @@ Rules:
                     if (result.isConfirmed) {
                         const orderData = { n: userInfo.name, t: userInfo.phone, d: [...myCart] };
                         const key = `${orderData.n}-${orderData.t}`;
-                        addOrderToSystem(key, orderData); // 直接調用加入邏輯
+                        addOrderToSystem(key, orderData); 
                         myCart = []; // 清空購物車
                         updateCartBadge();
                         Swal.fire('成功', '團長訂單已加入總結', 'success');
                     }
                 });
             } else {
-                generateOrderTicket(); // 同事模式顯示 QR
+                // 同事模式：強制顯示 QR Modal
+                generateOrderTicket(); 
             }
         }
 
@@ -642,7 +680,8 @@ Rules:
             userInfo = { name: '', phone: '' };
             localStorage.removeItem('lunch_captain_user');
             document.getElementById('guestInfoDisplay').classList.add('hidden');
-            checkOut(); 
+            // 讓使用者知道已清除，下次點餐會再問
+            Swal.fire('已重置', '下次點餐時請重新輸入資料', 'info');
         }
 
         function generateOrderTicket() {
@@ -679,7 +718,6 @@ Rules:
             });
         }
 
-        // 新增：WhatsApp 傳送功能
         function sendToWhatsapp() {
             const str = document.getElementById('ticket-modal').dataset.orderString;
             const url = `whatsapp://send?text=${encodeURIComponent(str)}`;
@@ -740,7 +778,6 @@ Rules:
             order.paid = false;
             allOrders[key] = order;
             updateOrderBadge();
-            // 如果是在訂單總結畫面，實時更新
             if(!document.getElementById('summary-panel').classList.contains('hidden')) {
                 showSummary();
             }
@@ -760,7 +797,7 @@ Rules:
             let grandTotal = 0;
             const keys = Object.keys(allOrders);
 
-            // 新增：手動加入訂單按鈕 (方便團長直接加人)
+            // 手動加入按鈕
             const addManualBtn = document.createElement('button');
             addManualBtn.className = "w-full border-2 border-dashed border-gray-300 text-gray-500 p-2 rounded mb-4 text-sm hover:border-blue-500 hover:text-blue-600";
             addManualBtn.innerHTML = "<i class='fas fa-plus mr-1'></i> 手動輸入代碼";
@@ -828,8 +865,6 @@ Rules:
                 text += `${n} x ${d.count}\n`;
             }
             text += `━━━━━━━━━━━━\n💰 總計：$${total}\n(LunchCaptain)`;
-            
-            // 使用 WhatsApp Protocol
             window.location.href = `whatsapp://send?text=${encodeURIComponent(text)}`;
         }
 
@@ -846,7 +881,6 @@ Rules:
             navigator.clipboard.writeText(text).then(() => Swal.fire('已複製', '可貼到群組', 'success'));
         }
 
-        // 新增：系統分享
         async function shareSystem() {
             if (navigator.share) {
                 try {
