@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LunchCaptain - 團長救星 V3.2</title>
+    <title>LunchCaptain - 團長救星 V3.3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
@@ -22,12 +22,8 @@
         .btn-warning { @apply bg-orange-500 text-white hover:bg-orange-600; }
         .card { @apply bg-white rounded-xl shadow-lg p-5 mb-4 border border-gray-100; }
         .footer-sign { font-family: 'Courier New', monospace; letter-spacing: 1px; }
-        
-        /* 選項樣式 */
         .option-tag { @apply border border-gray-300 rounded px-3 py-1 text-sm cursor-pointer hover:bg-blue-50 transition select-none; }
         .option-tag.active { @apply bg-blue-600 text-white border-blue-600; }
-        
-        /* 下拉選單美化 */
         .custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.5rem center;
@@ -57,14 +53,14 @@
             </div>
 
             <div id="historySection" class="mb-4 hidden bg-gray-50 p-3 rounded">
-                <select id="historySelect" onchange="loadFromHistory(this.value)" class="w-full p-2 border rounded text-sm mb-2">
+                <select id="historySelect" onchange="loadFromHistory(this.value)" class="w-full p-2 border rounded text-sm mb-2 custom-select">
                     <option value="">-- 載入舊菜單 --</option>
                 </select>
                 <button onclick="clearHistory()" class="text-xs text-red-400 w-full text-right">清除紀錄</button>
             </div>
 
             <div class="mb-4">
-                <label class="text-xs text-gray-500 font-bold mb-1 block">1. 是否需要第二語言翻譯？</label>
+                <label class="text-xs text-gray-500 font-bold mb-1 block">1. 第二語言翻譯</label>
                 <select id="secondLang" class="w-full p-3 border rounded-lg text-sm custom-select bg-white focus:ring-2 focus:ring-blue-500 outline-none">
                     <option value="">🚫 不需翻譯 (預設)</option>
                     <option value="Traditional Chinese">1. 中文 (繁體)</option>
@@ -72,36 +68,14 @@
                     <option value="Japanese">3. 日文</option>
                     <option value="Korean">4. 韓文</option>
                     <option value="Thai">5. 泰文</option>
-                    <option value="Vietnamese">6. 越南文</option>
-                    <option value="French">7. 法文</option>
-                    <option value="Italian">8. 義大利文</option>
-                    <option value="Spanish">9. 西班牙文</option>
-                    <option value="German">10. 德文</option>
-                    <option value="Portuguese">11. 葡萄牙文</option>
-                    <option value="Russian">12. 俄文</option>
-                    <option value="Arabic">13. 阿拉伯文</option>
-                    <option value="Indonesian">14. 印尼文</option>
-                    <option value="Tagalog">15. 他加祿文</option>
-                    <option value="Turkish">16. 土耳其文</option>
-                    <option value="Persian">17. 波斯文</option>
-                    <option value="Hindi">18. 印地文</option>
-                    <option value="Bengali">19. 孟加拉文</option>
-                    <option value="Swahili">20. 斯瓦希里文</option>
-                    <option value="Czech">21. 捷克文</option>
-                </select>
+                    </select>
             </div>
 
-            <label class="text-xs text-gray-500 font-bold mb-1 block">2. 選擇 AI 平台：</label>
+            <label class="text-xs text-gray-500 font-bold mb-1 block">2. 選擇 AI 平台</label>
             <div class="grid grid-cols-3 gap-2 mb-4">
-                <button onclick="setAI('gemini')" id="btn-gemini" class="btn btn-primary text-xs flex-col py-3 ring-2 ring-offset-1 ring-blue-600">
-                    <i class="fas fa-star mb-1"></i>Gemini
-                </button>
-                <button onclick="setAI('chatgpt')" id="btn-chatgpt" class="btn btn-success text-xs flex-col py-3 opacity-60 hover:opacity-100">
-                    <i class="fas fa-bolt mb-1"></i>ChatGPT
-                </button>
-                <button onclick="setAI('grok')" id="btn-grok" class="btn btn-dark text-xs flex-col py-3 opacity-60 hover:opacity-100">
-                    <i class="fas fa-rocket mb-1"></i>Grok
-                </button>
+                <button onclick="setAI('gemini')" id="btn-gemini" class="btn btn-primary text-xs flex-col py-3 ring-2 ring-offset-1 ring-blue-600"><i class="fas fa-star mb-1"></i>Gemini</button>
+                <button onclick="setAI('chatgpt')" id="btn-chatgpt" class="btn btn-success text-xs flex-col py-3 opacity-60"><i class="fas fa-bolt mb-1"></i>ChatGPT</button>
+                <button onclick="setAI('grok')" id="btn-grok" class="btn btn-dark text-xs flex-col py-3 opacity-60"><i class="fas fa-rocket mb-1"></i>Grok</button>
             </div>
 
             <button onclick="copyPromptAndOpenAI()" class="w-full btn btn-action mb-4 shadow-md text-sm py-3">
@@ -109,11 +83,9 @@
             </button>
 
             <div class="relative group">
-                <label class="text-xs text-gray-500 font-bold mb-1 block">4. 貼上 AI 回傳的 JSON：</label>
-                <textarea id="jsonInput" rows="3" class="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="在此貼上 (或點擊 AI 提供的返回連結自動帶入)..."></textarea>
-                <button onclick="pasteFromClipboard()" class="absolute top-7 right-2 bg-gray-100 p-1 rounded hover:bg-gray-200 text-gray-600 text-xs shadow-sm border">
-                    <i class="fas fa-paste"></i> 貼上
-                </button>
+                <label class="text-xs text-gray-500 font-bold mb-1 block">4. 貼上 AI JSON</label>
+                <textarea id="jsonInput" rows="3" class="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-xs focus:border-blue-500" placeholder="在此貼上..."></textarea>
+                <button onclick="pasteFromClipboard()" class="absolute top-7 right-2 bg-gray-100 p-1 rounded hover:bg-gray-200 text-gray-600 text-xs shadow-sm border"><i class="fas fa-paste"></i></button>
             </div>
             
             <button onclick="parseMenuAndGenerateLink()" class="w-full btn btn-primary mt-3">
@@ -133,14 +105,12 @@
         <div id="order-panel" class="hidden">
             <div class="mb-4 sticky top-16 z-30 bg-[#f8fafc] pb-2 pt-1 shadow-sm">
                 <h2 id="storeName" class="text-2xl font-bold text-gray-800 text-center mb-2"></h2>
-                
                 <div id="guestInfoDisplay" class="hidden text-center text-sm text-gray-600 mb-2">
                     <span id="displayRoleName" class="font-bold text-blue-600"></span> 
                     <span id="displayRolePhone" class="text-gray-400"></span>
                     <button onclick="resetGuestInfo()" class="text-xs underline ml-2 text-gray-400">修改</button>
                 </div>
             </div>
-
             <div id="menuContainer" class="mb-20 pb-20"></div>
         </div>
 
@@ -152,9 +122,7 @@
         </div>
 
         <div id="captain-fab" class="fixed bottom-6 right-6 flex flex-col gap-3 hidden z-50 items-end">
-            <button onclick="startScanner()" class="bg-blue-600 text-white w-14 h-14 rounded-full shadow-2xl hover:bg-blue-700 flex items-center justify-center border-2 border-white transition transform hover:scale-110">
-                <i class="fas fa-camera text-xl"></i>
-            </button>
+            <button onclick="startScanner()" class="bg-blue-600 text-white w-14 h-14 rounded-full shadow-2xl hover:bg-blue-700 flex items-center justify-center border-2 border-white transition transform hover:scale-110"><i class="fas fa-camera text-xl"></i></button>
             <button onclick="showSummary()" class="bg-slate-800 text-white w-14 h-14 rounded-full shadow-2xl hover:bg-slate-900 flex items-center justify-center border-2 border-white transition transform hover:scale-110 relative">
                 <i class="fas fa-receipt text-xl"></i>
                 <span id="orderCountBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
@@ -168,7 +136,6 @@
                     <p class="text-sm text-gray-500" id="note-item-trans"></p>
                     <p class="text-blue-600 font-bold" id="note-item-price"></p>
                 </div>
-                
                 <div class="p-4 overflow-y-auto">
                     <p class="text-xs font-bold text-gray-500 mb-2">辣度</p>
                     <div class="flex flex-wrap gap-2 mb-4" id="opt-spicy">
@@ -177,39 +144,18 @@
                         <span class="option-tag" onclick="toggleOption(this)">大辣</span>
                         <span class="option-tag" onclick="toggleOption(this)">不辣</span>
                     </div>
-
-                    <p class="text-xs font-bold text-gray-500 mb-2">冰塊</p>
-                    <div class="flex flex-wrap gap-2 mb-4" id="opt-ice">
-                        <span class="option-tag" onclick="toggleOption(this)">正常冰</span>
-                        <span class="option-tag" onclick="toggleOption(this)">少冰</span>
-                        <span class="option-tag" onclick="toggleOption(this)">微冰</span>
-                        <span class="option-tag" onclick="toggleOption(this)">去冰</span>
-                        <span class="option-tag" onclick="toggleOption(this)">多冰</span>
-                    </div>
-
-                    <p class="text-xs font-bold text-gray-500 mb-2">甜度</p>
-                    <div class="flex flex-wrap gap-2 mb-4" id="opt-sugar">
-                        <span class="option-tag" onclick="toggleOption(this)">正常糖</span>
-                        <span class="option-tag" onclick="toggleOption(this)">少糖</span>
-                        <span class="option-tag" onclick="toggleOption(this)">半糖</span>
-                        <span class="option-tag" onclick="toggleOption(this)">微糖</span>
-                        <span class="option-tag" onclick="toggleOption(this)">無糖</span>
-                    </div>
-
-                    <p class="text-xs font-bold text-gray-500 mb-2">其他</p>
+                    <p class="text-xs font-bold text-gray-500 mb-2">其他需求</p>
                     <div class="flex flex-wrap gap-2 mb-3">
                         <span class="option-tag" onclick="toggleOption(this, true)">走蔥</span>
-                        <span class="option-tag" onclick="toggleOption(this, true)">走奶</span>
-                        <span class="option-tag" onclick="toggleOption(this, true)">走甜</span>
+                        <span class="option-tag" onclick="toggleOption(this, true)">少冰</span>
+                        <span class="option-tag" onclick="toggleOption(this, true)">微糖</span>
                         <span class="option-tag" onclick="toggleOther(this)">其他...</span>
                     </div>
-                    
-                    <input type="text" id="note-other-input" class="w-full p-2 border rounded text-sm hidden bg-gray-50" placeholder="請輸入其他需求...">
+                    <input type="text" id="note-other-input" class="w-full p-2 border rounded text-sm hidden bg-gray-50" placeholder="備註...">
                 </div>
-
                 <div class="p-4 border-t bg-gray-50 flex gap-2">
-                    <button onclick="closeNoteModal()" class="flex-1 btn bg-gray-200 text-gray-700 hover:bg-gray-300">取消</button>
-                    <button onclick="confirmAddItem()" class="flex-1 btn btn-primary">加入訂單</button>
+                    <button onclick="closeNoteModal()" class="flex-1 btn bg-gray-200 text-gray-700">取消</button>
+                    <button onclick="confirmAddItem()" class="flex-1 btn btn-primary">加入</button>
                 </div>
             </div>
         </div>
@@ -221,43 +167,42 @@
                     <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-[0.2em]">ORDER TICKET</p>
                 </div>
                 <div class="flex justify-between text-base mb-3 bg-gray-50 p-2 rounded border border-gray-100">
-                    <span class="font-bold text-gray-700"><i class="fas fa-user mr-1 text-gray-400"></i><span id="ticket-name"></span></span>
-                    <span class="font-bold text-gray-500"><i class="fas fa-phone mr-1 text-gray-400"></i><span id="ticket-phone"></span></span>
+                    <span class="font-bold text-gray-700"><span id="ticket-name"></span></span>
+                    <span class="font-bold text-gray-500"><span id="ticket-phone"></span></span>
                 </div>
                 <div id="ticket-items" class="text-sm space-y-2 mb-4 max-h-40 overflow-y-auto"></div>
                 <div class="flex justify-between font-bold text-xl border-t-2 border-gray-800 pt-3 mb-4">
                     <span>TOTAL</span>
                     <span id="ticket-total" class="text-red-600"></span>
                 </div>
-                <div class="flex justify-center mb-2">
+                <div class="flex flex-col items-center justify-center mb-2">
                     <div id="orderQRCode"></div>
+                    <div id="fallbackCodeArea" class="hidden w-full mt-2">
+                        <p class="text-xs text-red-500 text-center mb-1">⚠️ QR 產生失敗 (內容過多)，請複製下方代碼：</p>
+                        <textarea id="fallbackText" class="w-full h-20 text-[10px] border p-1 bg-gray-100" readonly></textarea>
+                    </div>
                 </div>
-                <p class="text-[10px] text-center text-gray-400">請截圖或讓團長掃描</p>
+                <p class="text-[10px] text-center text-gray-400">請截圖或複製代碼</p>
             </div>
             
             <div class="grid grid-cols-2 gap-2 w-full max-w-sm mb-2">
-                <button onclick="downloadTicket()" class="btn btn-success text-sm">
-                    <i class="fas fa-download mr-1"></i> 下載圖片
-                </button>
-                <button onclick="copyOrderString()" class="btn btn-action text-sm">
-                    <i class="fas fa-copy mr-1"></i> 複製代碼
-                </button>
+                <button onclick="downloadTicket()" class="btn btn-success text-sm"><i class="fas fa-download mr-1"></i> 下載圖片</button>
+                <button onclick="copyOrderString()" class="btn btn-action text-sm"><i class="fas fa-copy mr-1"></i> 複製代碼</button>
             </div>
-            <button onclick="document.getElementById('ticket-modal').classList.add('hidden')" class="text-white underline text-sm mt-4">關閉視窗</button>
+            <button onclick="document.getElementById('ticket-modal').classList.add('hidden')" class="text-white underline text-sm mt-4">關閉</button>
         </div>
 
         <div id="scanner-modal" class="fixed inset-0 bg-black z-[80] hidden flex flex-col">
             <div class="flex justify-between items-center p-4 bg-black text-white">
-                <h3 class="font-bold text-lg"><i class="fas fa-camera mr-2"></i>掃描訂單</h3>
-                <button onclick="stopScanner()" class="text-2xl opacity-80 hover:opacity-100"><i class="fas fa-times"></i></button>
+                <h3 class="font-bold text-lg">掃描訂單</h3>
+                <button onclick="stopScanner()" class="text-2xl"><i class="fas fa-times"></i></button>
             </div>
             <div class="flex-grow flex flex-col justify-center bg-black relative">
                 <div id="reader" class="w-full h-64 bg-gray-900 border-y-2 border-blue-500"></div>
-                <p class="text-gray-400 text-center text-sm mt-4 animate-pulse">請對準同事的 QR Code</p>
                 <div class="absolute bottom-0 w-full bg-gray-900 p-6 rounded-t-3xl border-t border-gray-700">
-                    <p class="text-xs text-gray-400 mb-2 text-center">或貼上訂單代碼：</p>
+                    <p class="text-xs text-gray-400 mb-2 text-center">或貼上代碼：</p>
                     <div class="flex gap-2">
-                        <input type="text" id="manualOrderInput" class="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none" placeholder="在此貼上代碼...">
+                        <input type="text" id="manualOrderInput" class="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg p-3 text-sm" placeholder="在此貼上...">
                         <button onclick="manualImportOrder()" class="btn btn-action whitespace-nowrap"><i class="fas fa-file-import"></i></button>
                     </div>
                 </div>
@@ -276,53 +221,51 @@
                     <span id="grand-total" class="text-red-600">$0</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mb-2">
-                    <button onclick="copyForRestaurant()" class="btn btn-primary text-xs">
-                        <i class="fab fa-whatsapp mr-1"></i> 給餐廳 (WhatsApp)
-                    </button>
-                    <button onclick="copyForGroup()" class="btn btn-action text-xs">
-                        <i class="fas fa-users mr-1"></i> 給群組 (Line)
-                    </button>
+                    <button onclick="copyForRestaurant()" class="btn btn-primary text-xs"><i class="fab fa-whatsapp mr-1"></i> 給餐廳</button>
+                    <button onclick="copyForGroup()" class="btn btn-action text-xs"><i class="fas fa-users mr-1"></i> 給群組</button>
                 </div>
-                <button onclick="pickRandomVictim()" class="w-full btn btn-warning text-xs">
-                    <i class="fas fa-dice mr-1"></i> 誰去拿外賣？(隨機)
-                </button>
+                <button onclick="pickRandomVictim()" class="w-full btn btn-warning text-xs"><i class="fas fa-dice mr-1"></i> 誰去拿外賣？</button>
             </div>
         </div>
-
     </div>
 
     <footer class="text-center text-gray-400 text-xs py-6 mt-auto footer-sign border-t bg-white">
         <p class="font-bold text-gray-500">LunchCaptain • 團長救星</p>
-        <p class="opacity-50 text-[10px]">V3.2 Bilingual</p>
+        <p class="opacity-50 text-[10px]">V3.3 Internal SKU System</p>
     </footer>
 
     <script>
-        // --- 核心狀態 ---
+        // --- 核心變數 ---
         let currentAI = 'gemini';
         let menuData = null;
-        let myCart = []; 
+        let myCart = []; // 存 { id, n, p, o } (id 是關鍵)
         let allOrders = {}; 
         let html5QrcodeScanner = null;
         let tempItem = null; 
         let userInfo = { name: '', phone: '' };
-        
-        // --- 1. 初始化 ---
+
+        // --- ID 編碼工具 (AAAA - ZZZZ) ---
+        function generateId(index) {
+            let code = '';
+            for (let i = 0; i < 4; i++) {
+                let remainder = index % 26;
+                code = String.fromCharCode(65 + remainder) + code;
+                index = Math.floor(index / 26);
+            }
+            return code;
+        }
+
+        // --- 初始化 ---
         window.onload = function() {
             if(window.location.hash === "#import_menu") {
                 document.getElementById('setup-panel').scrollIntoView();
                 document.getElementById('jsonInput').focus();
                 history.replaceState(null, null, ' ');
-                Swal.fire({icon: 'info', title: '歡迎回來', text: '請貼上 JSON', timer: 2000, showConfirmButton: false});
             }
-
             const params = new URLSearchParams(window.location.search);
             const compressedMenu = params.get('menu');
-
-            if (compressedMenu) {
-                initGuestMode(compressedMenu);
-            } else {
-                initCaptainMode();
-            }
+            if (compressedMenu) initGuestMode(compressedMenu);
+            else initCaptainMode();
         };
 
         function initCaptainMode() {
@@ -331,82 +274,51 @@
             setAI('gemini');
         }
 
-        function toggleHistory() {
-            document.getElementById('historySection').classList.toggle('hidden');
-        }
-
-        // --- 2. AI Prompt 邏輯 (關鍵修正) ---
-        
+        // --- AI & Menu Parsing (加入 ID 分配) ---
         function setAI(ai) {
             currentAI = ai;
-            ['gemini','chatgpt','grok'].forEach(k => {
-                const btn = document.getElementById(`btn-${k}`);
-                btn.classList.remove('ring-2', 'ring-offset-1', 'ring-blue-600', 'opacity-100');
-                btn.classList.add('opacity-60');
-            });
-            const activeBtn = document.getElementById(`btn-${currentAI}`);
-            activeBtn.classList.remove('opacity-60');
-            activeBtn.classList.add('ring-2', 'ring-offset-1', 'ring-blue-600', 'opacity-100');
+            ['gemini','chatgpt','grok'].forEach(k => document.getElementById(`btn-${k}`).classList.remove('ring-2', 'ring-offset-1', 'ring-blue-600'));
+            document.getElementById(`btn-${currentAI}`).classList.add('ring-2', 'ring-offset-1', 'ring-blue-600');
         }
 
         function copyPromptAndOpenAI() {
             const returnUrl = window.location.href.split('#')[0].split('?')[0] + "#import_menu";
             const targetLang = document.getElementById('secondLang').value;
-            
-            // 建構翻譯指令
-            let transInstruction = `field "n" MUST be the ORIGINAL language shown in the image (DO NOT Translate "n").`;
+            let transInstruction = `field "n" MUST be the ORIGINAL language shown in the image.`;
             let outputFields = `"n":"Original Name", "p":Price_Number`;
-            
             if (targetLang) {
-                transInstruction += ` Also, add a new field "t" which is the translation of "n" into ${targetLang}.`;
-                outputFields += `, "t":"Translated Name in ${targetLang}"`;
+                transInstruction += ` Add field "t" (translation in ${targetLang}).`;
+                outputFields += `, "t":"Translated Name"`;
             }
-
-            let promptText = `Role: Professional Menu Data Analyst.
-Task: Analyze the uploaded menu image.
-Output Format: Strict JSON ONLY. No markdown code blocks.
-JSON Structure: {"r":"Restaurant Name","m":[{"c":"Category Name","i":[{${outputFields}}]}]}
-Rules:
-1. ${transInstruction}
-2. "p" (Price) must be a number.
-3. If size options exist, create separate items.
-4. AFTER the JSON, append a new line with this exact Markdown link: [↩️ Click here to Import Menu](${returnUrl})`;
-
-            if(currentAI === 'grok') promptText += `\n\n(Note: If using Grok App, please manually switch back to browser to paste)`;
+            let promptText = `Role: Menu Data Analyst. Task: Analyze image. Output: Strict JSON ONLY. Structure: {"r":"Restaurant Name","m":[{"c":"Category","i":[{${outputFields}}]}]}. Rules: 1. ${transInstruction} 2. Price is number. 3. Size options = separate items. 4. Append Link: [↩️ Import Menu](${returnUrl})`;
 
             navigator.clipboard.writeText(promptText).then(() => {
-                let url = "https://gemini.google.com/";
-                if(currentAI === 'chatgpt') url = "https://chat.openai.com/";
-                if(currentAI === 'grok') url = "https://x.com/i/grok";
-
-                Swal.fire({
-                    icon: 'success', title: '指令已複製', 
-                    text: targetLang ? `已設定翻譯為：${targetLang}` : '已設定保留原文',
-                    timer: 1500, showConfirmButton: false
-                }).then(() => window.open(url, '_blank'));
+                let url = currentAI === 'chatgpt' ? "https://chat.openai.com/" : (currentAI === 'grok' ? "https://x.com/i/grok" : "https://gemini.google.com/");
+                Swal.fire({icon: 'success', title: '指令已複製', timer: 1000, showConfirmButton:false}).then(() => window.open(url, '_blank'));
             });
         }
 
         async function pasteFromClipboard() {
-            try {
-                const text = await navigator.clipboard.readText();
-                document.getElementById('jsonInput').value = text;
-            } catch (err) {
-                Swal.fire('權限提示', '瀏覽器阻擋自動貼上，請手動點擊輸入框貼上', 'info');
-            }
+            try { document.getElementById('jsonInput').value = await navigator.clipboard.readText(); } 
+            catch { Swal.fire('提示', '請手動貼上', 'info'); }
         }
 
         function parseMenuAndGenerateLink() {
             const raw = document.getElementById('jsonInput').value;
             if(!raw) return Swal.fire('錯誤', '請先貼上 JSON', 'error');
-
             try {
-                const jsonMatch = raw.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) throw new Error("找不到 JSON 區塊");
-                const cleanJson = jsonMatch[0];
+                const cleanJson = raw.match(/\{[\s\S]*\}/)[0];
                 menuData = JSON.parse(cleanJson);
                 if (!menuData.m) throw new Error("JSON 缺少 menu");
-                
+
+                // === 關鍵步驟：分配內部 ID (SKU) ===
+                let counter = 0;
+                menuData.m.forEach(cat => {
+                    cat.i.forEach(item => {
+                        item.id = generateId(counter++); // 分配 AAAA, AAAB...
+                    });
+                });
+
                 saveToHistory(menuData);
                 generateLinkAndShow();
             } catch (e) {
@@ -414,7 +326,6 @@ Rules:
             }
         }
 
-        // --- 歷史紀錄 ---
         function saveToHistory(data) {
             let history = JSON.parse(localStorage.getItem('lunch_captain_history') || "[]");
             history = history.filter(h => h.name !== data.r);
@@ -430,9 +341,7 @@ Rules:
             if(history.length > 0) {
                 document.getElementById('historySection').classList.remove('hidden');
                 select.innerHTML = '<option value="">-- 載入舊菜單 --</option>';
-                history.forEach((h, index) => {
-                    select.innerHTML += `<option value="${index}">${h.name} (${new Date(h.time).toLocaleDateString()})</option>`;
-                });
+                history.forEach((h, index) => select.innerHTML += `<option value="${index}">${h.name} (${new Date(h.time).toLocaleDateString()})</option>`);
             }
         }
 
@@ -444,22 +353,17 @@ Rules:
         }
 
         function clearHistory() {
-            if(confirm('確定清除紀錄？')) {
-                localStorage.removeItem('lunch_captain_history');
-                location.reload();
-            }
+            if(confirm('清除紀錄？')) { localStorage.removeItem('lunch_captain_history'); location.reload(); }
         }
 
         function generateLinkAndShow() {
             const jsonString = JSON.stringify(menuData);
             const compressed = LZString.compressToEncodedURIComponent(jsonString);
             const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressed}`;
-            
             document.getElementById('shareTitle').textContent = menuData.r;
             const qrContainer = document.getElementById('menuQRCode');
             qrContainer.innerHTML = "";
             new QRCode(qrContainer, { text: shareUrl, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.L });
-
             document.getElementById('setup-panel').classList.add('hidden');
             document.getElementById('share-panel').classList.remove('hidden');
         }
@@ -473,24 +377,28 @@ Rules:
             renderMenu();
         }
 
-        // --- 3. 同事點餐 ---
+        // --- 同事點餐 ---
         function initGuestMode(compressed) {
             try {
                 const jsonString = LZString.decompressFromEncodedURIComponent(compressed);
                 menuData = JSON.parse(jsonString);
+                // 確保每個項目都有 ID (雖然從連結解出來應該要有，但雙重保險)
+                if(!menuData.m[0].i[0].id) {
+                     let counter = 0;
+                     menuData.m.forEach(cat => cat.i.forEach(item => item.id = generateId(counter++)));
+                }
+                
                 document.getElementById('roleBadge').textContent = "點餐模式";
                 document.getElementById('roleBadge').classList.remove('hidden');
                 document.getElementById('setup-panel').classList.add('hidden');
                 document.getElementById('order-panel').classList.remove('hidden');
                 document.getElementById('guest-fab').classList.remove('hidden');
                 
-                // 嘗試讀取舊資料
                 const savedUser = localStorage.getItem('lunch_captain_user');
                 if(savedUser) {
                     userInfo = JSON.parse(savedUser);
                     updateUserDisplay();
                 }
-
                 renderMenu();
             } catch (e) {
                 Swal.fire('錯誤', '無效連結', 'error').then(() => location.href = location.pathname.split('?')[0]);
@@ -501,7 +409,6 @@ Rules:
             document.getElementById('storeName').textContent = menuData.r || "餐廳";
             const container = document.getElementById('menuContainer');
             container.innerHTML = "";
-
             menuData.m.forEach(cat => {
                 const section = document.createElement('div');
                 section.className = "mb-4";
@@ -512,17 +419,8 @@ Rules:
                     const el = document.createElement('div');
                     el.className = "bg-white p-4 rounded-lg shadow-sm flex justify-between items-center cursor-pointer hover:bg-blue-50 transition border border-gray-100 active:scale-[0.98]";
                     el.onclick = () => openNoteModal(item);
-                    
-                    // 支援顯示翻譯名稱 (t)
                     const subName = item.t ? `<div class="text-xs text-gray-500 mt-1">${item.t}</div>` : '';
-                    
-                    el.innerHTML = `
-                        <div>
-                            <div class="text-gray-800 font-medium">${item.n}</div>
-                            ${subName}
-                        </div>
-                        <span class="font-bold text-blue-600">$${item.p}</span>
-                    `;
+                    el.innerHTML = `<div><div class="text-gray-800 font-medium">${item.n}</div>${subName}</div><span class="font-bold text-blue-600">$${item.p}</span>`;
                     grid.appendChild(el);
                 });
                 section.appendChild(grid);
@@ -536,35 +434,24 @@ Rules:
             document.getElementById('note-item-name').textContent = item.n;
             document.getElementById('note-item-trans').textContent = item.t || '';
             document.getElementById('note-item-price').textContent = `$${item.p}`;
-            
             document.querySelectorAll('.option-tag').forEach(el => el.classList.remove('active'));
             document.getElementById('note-other-input').value = "";
             document.getElementById('note-other-input').classList.add('hidden');
             document.getElementById('note-modal').classList.remove('hidden');
         }
 
-        function closeNoteModal() {
-            document.getElementById('note-modal').classList.add('hidden');
-            tempItem = null;
-        }
+        function closeNoteModal() { document.getElementById('note-modal').classList.add('hidden'); tempItem = null; }
 
         function toggleOption(el, allowMultiple = false) {
-            if (!allowMultiple) {
-                const parent = el.parentElement;
-                parent.querySelectorAll('.option-tag').forEach(tag => tag.classList.remove('active'));
-            }
+            if (!allowMultiple) el.parentElement.querySelectorAll('.option-tag').forEach(tag => tag.classList.remove('active'));
             el.classList.toggle('active');
         }
 
         function toggleOther(el) {
             el.classList.toggle('active');
             const input = document.getElementById('note-other-input');
-            if(el.classList.contains('active')) {
-                input.classList.remove('hidden');
-                input.focus();
-            } else {
-                input.classList.add('hidden');
-            }
+            input.classList.toggle('hidden', !el.classList.contains('active'));
+            if(!input.classList.contains('hidden')) input.focus();
         }
 
         function confirmAddItem() {
@@ -575,10 +462,9 @@ Rules:
             });
             const otherText = document.getElementById('note-other-input').value.trim();
             if(otherText) notes.push(otherText);
-
-            const noteString = notes.join(', ');
-            myCart.push({ n: tempItem.n, p: tempItem.p, o: noteString }); // 購物車只存原文 n
             
+            // 購物車加入 ID, 名稱(僅顯示用), 價格, 備註
+            myCart.push({ id: tempItem.id, n: tempItem.n, p: tempItem.p, o: notes.join(', ') });
             updateCartBadge();
             closeNoteModal();
             const Toast = Swal.mixin({toast: true, position: 'top', showConfirmButton: false, timer: 1000});
@@ -592,27 +478,16 @@ Rules:
             badge.classList.add('scale-100');
         }
 
-        // --- 4. 結算 (修復按鈕無反應問題) ---
-        
+        // --- 結算與 QR 生成 (Fail-Safe) ---
         async function checkOut() {
             if (myCart.length === 0) return Swal.fire('購物車空的', '請先點餐', 'warning');
-
-            // 檢查是否已有資料，沒有則彈窗輸入
             if (!userInfo.name || !userInfo.phone) {
                 const { value: formValues } = await Swal.fire({
-                    title: '請輸入訂購人資料',
-                    html:
-                        '<input id="swal-input1" class="swal2-input" placeholder="你的名字">' +
-                        '<input id="swal-input2" class="swal2-input" type="tel" placeholder="電話後3碼">',
+                    title: '請輸入資料',
+                    html: '<input id="swal-input1" class="swal2-input" placeholder="名字"><input id="swal-input2" class="swal2-input" type="tel" placeholder="電話後3碼">',
                     focusConfirm: false,
-                    preConfirm: () => {
-                        return [
-                            document.getElementById('swal-input1').value,
-                            document.getElementById('swal-input2').value
-                        ]
-                    }
+                    preConfirm: () => [document.getElementById('swal-input1').value, document.getElementById('swal-input2').value]
                 });
-
                 if (formValues) {
                     if(!formValues[0] || !formValues[1]) return Swal.fire('資料不完整', '請填寫名字與電話', 'error');
                     userInfo.name = formValues[0];
@@ -636,32 +511,52 @@ Rules:
             userInfo = { name: '', phone: '' };
             localStorage.removeItem('lunch_captain_user');
             document.getElementById('guestInfoDisplay').classList.add('hidden');
-            checkOut(); // 重新觸發輸入
+            checkOut();
         }
 
         function generateOrderTicket() {
-            let total = 0;
-            const itemsHtml = myCart.map(i => {
-                total += i.p;
-                const noteHtml = i.o ? `<span class="text-xs text-orange-500 block ml-2">└ ${i.o}</span>` : '';
-                return `<div class="border-b border-gray-100 pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>${noteHtml}</div>`;
-            }).join("");
+            try {
+                let total = 0;
+                const itemsHtml = myCart.map(i => {
+                    total += i.p;
+                    const noteHtml = i.o ? `<span class="text-xs text-orange-500 block ml-2">└ ${i.o}</span>` : '';
+                    return `<div class="border-b border-gray-100 pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>${noteHtml}</div>`;
+                }).join("");
 
-            const orderData = { n: userInfo.name, t: userInfo.phone, d: myCart };
-            const orderString = JSON.stringify(orderData);
+                // === 壓縮傳輸資料：只傳 ID 和 備註 ===
+                const compressedCart = myCart.map(item => ({ i: item.id, o: item.o }));
+                const orderData = { n: userInfo.name, t: userInfo.phone, d: compressedCart };
+                const orderString = JSON.stringify(orderData);
 
-            document.getElementById('ticket-store').textContent = menuData.r;
-            document.getElementById('ticket-name').textContent = userInfo.name;
-            document.getElementById('ticket-phone').textContent = userInfo.phone;
-            document.getElementById('ticket-items').innerHTML = itemsHtml;
-            document.getElementById('ticket-total').textContent = "$" + total;
+                document.getElementById('ticket-store').textContent = menuData.r;
+                document.getElementById('ticket-name').textContent = userInfo.name;
+                document.getElementById('ticket-phone').textContent = userInfo.phone;
+                document.getElementById('ticket-items').innerHTML = itemsHtml;
+                document.getElementById('ticket-total').textContent = "$" + total;
 
-            const qrContainer = document.getElementById('orderQRCode');
-            qrContainer.innerHTML = "";
-            new QRCode(qrContainer, { text: orderString, width: 180, height: 180 });
+                // 嘗試生成 QR Code
+                const qrContainer = document.getElementById('orderQRCode');
+                const fallbackArea = document.getElementById('fallbackCodeArea');
+                qrContainer.innerHTML = "";
+                fallbackArea.classList.add('hidden');
+                qrContainer.classList.remove('hidden');
 
-            document.getElementById('ticket-modal').dataset.orderString = orderString;
-            document.getElementById('ticket-modal').classList.remove('hidden');
+                try {
+                    new QRCode(qrContainer, { text: orderString, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.L });
+                } catch (qrError) {
+                    // QR 生成失敗 (太長)，切換到降級模式
+                    console.error("QR Fail", qrError);
+                    qrContainer.classList.add('hidden');
+                    fallbackArea.classList.remove('hidden');
+                    document.getElementById('fallbackText').value = orderString;
+                }
+
+                document.getElementById('ticket-modal').dataset.orderString = orderString;
+                document.getElementById('ticket-modal').classList.remove('hidden');
+            } catch (e) {
+                console.error(e);
+                Swal.fire('系統錯誤', '無法生成訂單，請重試', 'error');
+            }
         }
 
         function downloadTicket() {
@@ -678,7 +573,7 @@ Rules:
             navigator.clipboard.writeText(str).then(() => Swal.fire({icon:'success', title:'代碼已複製', text:'傳給團長貼上即可'}));
         }
 
-        // --- 5. 團長收單 ---
+        // --- 團長收單 (ID 反查邏輯) ---
         function startScanner() {
             document.getElementById('scanner-modal').classList.remove('hidden');
             html5QrcodeScanner = new Html5Qrcode("reader");
@@ -686,14 +581,11 @@ Rules:
         }
 
         function stopScanner() {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.stop().then(() => {
-                    document.getElementById('scanner-modal').classList.add('hidden');
-                    html5QrcodeScanner = null;
-                });
-            } else {
+            if (html5QrcodeScanner) html5QrcodeScanner.stop().then(() => {
                 document.getElementById('scanner-modal').classList.add('hidden');
-            }
+                html5QrcodeScanner = null;
+            });
+            else document.getElementById('scanner-modal').classList.add('hidden');
         }
 
         function manualImportOrder() {
@@ -702,24 +594,47 @@ Rules:
             document.getElementById('manualOrderInput').value = "";
         }
 
+        // 反查工具：根據 ID 找回 完整 Item 物件
+        function findItemById(id) {
+            if(!menuData) return null;
+            for(let cat of menuData.m) {
+                for(let item of cat.i) {
+                    if(item.id === id) return item;
+                }
+            }
+            return null;
+        }
+
         function onScanSuccess(decodedText, result) {
             try {
                 const order = JSON.parse(decodedText);
                 if (!order.n || !order.d) throw new Error("格式錯誤");
-
                 if(html5QrcodeScanner) html5QrcodeScanner.pause();
+
+                // 還原訂單內容 (Rehydrate)
+                // 傳來的是 { i: 'AAAA', o: '少冰' } -> 轉回完整物件
+                const hydratedItems = order.d.map(compactItem => {
+                    const originalItem = findItemById(compactItem.i);
+                    if(originalItem) {
+                        return { n: originalItem.n, p: originalItem.p, o: compactItem.o };
+                    } else {
+                        return { n: "未知餐點", p: 0, o: "ID: " + compactItem.i };
+                    }
+                });
+
+                const fullOrder = { n: order.n, t: order.t, d: hydratedItems, paid: false };
                 const key = `${order.n}-${order.t}`;
-                
+
                 if(allOrders[key]) {
                     Swal.fire({
                         title: '重複訂單', text: `${order.n} 已存在，要覆蓋嗎？`, icon: 'question',
-                        showCancelButton: true, confirmButtonText: '覆蓋', cancelButtonText: '取消'
+                        showCancelButton: true, confirmButtonText: '覆蓋'
                     }).then((res) => {
-                        if(res.isConfirmed) addOrderToSystem(key, order);
+                        if(res.isConfirmed) addOrderToSystem(key, fullOrder);
                         if(html5QrcodeScanner) html5QrcodeScanner.resume();
                     });
                 } else {
-                    addOrderToSystem(key, order);
+                    addOrderToSystem(key, fullOrder);
                     Swal.fire({icon: 'success', title: `${order.n} 加入成功`, timer: 1000, showConfirmButton: false});
                     if(html5QrcodeScanner) html5QrcodeScanner.resume();
                 }
@@ -729,7 +644,6 @@ Rules:
         }
 
         function addOrderToSystem(key, order) {
-            order.paid = false;
             allOrders[key] = order;
             updateOrderBadge();
         }
@@ -741,10 +655,14 @@ Rules:
             badge.classList.toggle('hidden', count === 0);
         }
 
-        // --- 6. 結算輸出 ---
+        // --- 總結算 (DOM 渲染重寫) ---
         function showSummary() {
             const container = document.getElementById('summary-content');
-            container.innerHTML = "";
+            // 清空容器 (暴力清空確保重繪)
+            while (container.firstChild) {
+                container.removeChild(container.firstChild);
+            }
+
             let grandTotal = 0;
             const keys = Object.keys(allOrders);
 
@@ -756,16 +674,20 @@ Rules:
                     const subtotal = order.d.reduce((sum, item) => sum + item.p, 0);
                     grandTotal += subtotal;
 
-                    const itemsHtml = order.d.map(i => 
-                        `<div class='flex justify-between text-sm text-gray-600 pl-2 border-l-2 border-gray-200'>
-                            <span>${i.n} ${i.o ? `<span class='text-xs text-orange-500'>(${i.o})</span>` : ''}</span>
-                            <span>$${i.p}</span>
-                        </div>`
-                    ).join("");
+                    // 構建 HTML 字串
+                    let itemsHtml = "";
+                    order.d.forEach(i => {
+                        const noteDisplay = i.o ? `<span class='text-xs text-orange-500'>(${i.o})</span>` : '';
+                        itemsHtml += `
+                            <div class='flex justify-between text-sm text-gray-600 pl-2 border-l-2 border-gray-200'>
+                                <span>${i.n} ${noteDisplay}</span>
+                                <span>$${i.p}</span>
+                            </div>`;
+                    });
 
-                    const div = document.createElement('div');
-                    div.className = `p-3 rounded border-2 transition-all ${order.paid ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`;
-                    div.innerHTML = `
+                    const card = document.createElement('div');
+                    card.className = `p-3 rounded border-2 transition-all ${order.paid ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`;
+                    card.innerHTML = `
                         <div class="flex justify-between items-center mb-2">
                             <div class="flex items-center gap-2">
                                 <input type="checkbox" class="w-5 h-5 accent-green-600 cursor-pointer" ${order.paid ? 'checked' : ''} onchange="togglePaid('${key}')">
@@ -775,7 +697,7 @@ Rules:
                         </div>
                         <div class="space-y-1 mb-1">${itemsHtml}</div>
                     `;
-                    container.appendChild(div);
+                    container.appendChild(card);
                 });
             }
             document.getElementById('grand-total').textContent = "$" + grandTotal;
@@ -800,11 +722,8 @@ Rules:
                     total += item.p;
                 });
             });
-
             let text = `📅 訂單：${menuData.r}\n━━━━━━━━━━━━\n`;
-            for (const [n, d] of Object.entries(itemSummary)) {
-                text += `${n} x ${d.count}\n`;
-            }
+            for (const [n, d] of Object.entries(itemSummary)) text += `${n} x ${d.count}\n`;
             text += `━━━━━━━━━━━━\n💰 總計：$${total}\n(LunchCaptain)`;
             navigator.clipboard.writeText(text).then(() => Swal.fire('已複製', '可貼給餐廳', 'success'));
         }
@@ -825,17 +744,12 @@ Rules:
         function pickRandomVictim() {
             const keys = Object.keys(allOrders);
             if(keys.length === 0) return Swal.fire('沒人點餐', '', 'info');
-            
             let timerInterval;
             Swal.fire({
-                title: '🎲 抽獎中...',
-                html: '天選之人是：<b></b>',
-                timer: 2000,
+                title: '🎲 抽獎中...', html: '天選之人是：<b></b>', timer: 2000,
                 didOpen: () => {
                     const b = Swal.getHtmlContainer().querySelector('b');
-                    timerInterval = setInterval(() => {
-                        b.textContent = allOrders[keys[Math.floor(Math.random() * keys.length)]].n;
-                    }, 100);
+                    timerInterval = setInterval(() => b.textContent = allOrders[keys[Math.floor(Math.random() * keys.length)]].n, 100);
                 },
                 willClose: () => clearInterval(timerInterval)
             }).then(() => {
