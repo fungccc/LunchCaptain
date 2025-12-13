@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LunchCaptain V3.14</title>
+    <title>LunchCaptain V3.15</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
@@ -22,7 +22,6 @@
         .btn-action { @apply bg-indigo-600 text-white hover:bg-indigo-700; }
         .btn-warning { @apply bg-orange-500 text-white hover:bg-orange-600; }
         .btn-teal { @apply bg-teal-600 text-white hover:bg-teal-700; }
-        .btn-danger { @apply bg-red-500 text-white hover:bg-red-600; }
         .btn-outline { @apply border-2 border-gray-300 text-gray-600 hover:bg-gray-100; }
         
         .card { @apply bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-4; }
@@ -71,7 +70,6 @@
             appearance: none;
         }
 
-        /* V3.14: 確保 QR 容器有固定高度，避免生成失敗 */
         #orderQRCode {
             min-height: 180px;
             min-width: 180px;
@@ -90,7 +88,7 @@
             </div>
             <div>
                 <h1 class="text-lg font-bold tracking-wide leading-tight">LunchCaptain</h1>
-                <p class="text-[10px] text-gray-400">團長救星 v3.14</p>
+                <p class="text-[10px] text-gray-400">團長救星 v3.15</p>
             </div>
         </div>
         <div id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></div>
@@ -121,26 +119,7 @@
                     <option value="">🚫 不需翻譯 (預設)</option>
                     <option value="Traditional Chinese">1. 中文 (繁體)</option>
                     <option value="English">2. 英文</option>
-                    <option value="Japanese">3. 日文</option>
-                    <option value="Korean">4. 韓文</option>
-                    <option value="Thai">5. 泰文</option>
-                    <option value="Vietnamese">6. 越南文</option>
-                    <option value="French">7. 法文</option>
-                    <option value="Italian">8. 義大利文</option>
-                    <option value="Spanish">9. 西班牙文</option>
-                    <option value="German">10. 德文</option>
-                    <option value="Portuguese">11. 葡萄牙文</option>
-                    <option value="Russian">12. 俄文</option>
-                    <option value="Arabic">13. 阿拉伯文</option>
-                    <option value="Indonesian">14. 印尼文</option>
-                    <option value="Tagalog">15. 他加祿文</option>
-                    <option value="Turkish">16. 土耳其文</option>
-                    <option value="Persian">17. 波斯文</option>
-                    <option value="Hindi">18. 印地文</option>
-                    <option value="Bengali">19. 孟加拉文</option>
-                    <option value="Swahili">20. 斯瓦希里文</option>
-                    <option value="Czech">21. 捷克文</option>
-                </select>
+                    </select>
             </div>
 
             <div class="card">
@@ -174,13 +153,13 @@
             </div>
             
             <button onclick="parseMenuAndGenerateLink()" class="w-full btn btn-primary py-4 text-base shadow-lg mb-8">
-                <i class="fas fa-qrcode mr-2"></i> 5. 生成 QR Code (開始點餐)
+                <i class="fas fa-qrcode mr-2"></i> 5. 生成 QR CODE (開始點餐)
             </button>
         </div>
 
         <div id="share-panel" class="card hidden text-center pt-8 pb-8">
             <h2 class="text-xl font-bold mb-2 text-gray-800" id="shareTitle"></h2>
-            <p class="text-sm text-gray-500 mb-6 bg-blue-50 inline-block px-3 py-1 rounded-full">👇 請同事掃描此 QR Code 點餐 👇</p>
+            <p class="text-sm text-gray-500 mb-6 bg-blue-50 inline-block px-3 py-1 rounded-full">👇 請同事掃描此 QR CODE 點餐 👇</p>
             <div class="flex justify-center mb-6">
                 <div id="menuQRCode" class="p-3 bg-white rounded-xl shadow-lg border border-gray-100"></div>
             </div>
@@ -235,25 +214,15 @@
                     <h3 class="font-bold text-xl text-gray-800">🛒 購物車確認</h3>
                     <p class="text-xs text-gray-400">請確認餐點無誤，點錯可刪除</p>
                 </div>
-                
-                <div id="cart-list" class="flex-grow overflow-y-auto mb-4 space-y-2 px-1">
-                    </div>
-
+                <div id="cart-list" class="flex-grow overflow-y-auto mb-4 space-y-2 px-1"></div>
                 <div class="flex justify-between font-bold text-xl border-t pt-3 mb-3">
                     <span>總計</span>
                     <span id="cart-total-price" class="text-red-600">$0</span>
                 </div>
-
-                <div id="cart-action-hint" class="text-xs text-center text-gray-500 font-bold bg-gray-100 py-2 rounded mb-3 border border-gray-200">
-                    </div>
-
+                <div id="cart-action-hint" class="text-xs text-center text-gray-500 font-bold bg-gray-100 py-2 rounded mb-3 border border-gray-200"></div>
                 <div class="grid grid-cols-2 gap-3 w-full">
-                    <button onclick="closeCartModal()" class="btn btn-outline text-sm">
-                        <i class="fas fa-arrow-left mr-2"></i>繼續點
-                    </button>
-                    <button id="btn-final-submit" onclick="finalSubmit()" class="btn text-sm text-lg shadow-lg animate-pulse text-white bg-blue-600">
-                        確認
-                    </button>
+                    <button onclick="closeCartModal()" class="btn btn-outline text-sm"><i class="fas fa-arrow-left mr-2"></i>繼續點</button>
+                    <button id="btn-final-submit" onclick="finalSubmit()" class="btn text-sm text-lg shadow-lg animate-pulse text-white bg-blue-600">確認</button>
                 </div>
             </div>
         </div>
@@ -273,15 +242,14 @@
                     <span>總計</span>
                     <span id="ticket-total" class="text-red-600"></span>
                 </div>
-                
                 <div class="flex flex-col items-center justify-center mb-2">
                     <div id="orderQRCode" class="p-2 bg-white rounded border border-gray-200 mb-2"></div>
                     <p class="text-xs text-center text-gray-400">請截圖保存，或直接讓團長掃描</p>
                 </div>
-
+                
                 <div class="bg-gray-50 p-3 rounded border border-gray-200 mt-2">
-                    <p class="text-[10px] text-gray-500 mb-1">若 QR 無法顯示，請複製下方代碼：</p>
-                    <textarea id="ticket-raw-code" class="w-full h-16 text-[10px] p-1 border rounded resize-none bg-white text-gray-600" readonly></textarea>
+                    <p class="text-[10px] text-gray-500 mb-1">若 QR CODE 無法顯示，請複製代碼：</p>
+                    <textarea id="ticket-raw-code" class="w-full h-12 text-[10px] p-1 border rounded resize-none bg-white text-gray-600 break-all" readonly></textarea>
                     <button onclick="copyTicketCode()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs py-1 rounded mt-1">
                         <i class="fas fa-copy mr-1"></i>複製代碼
                     </button>
@@ -295,7 +263,6 @@
             <button onclick="shareTicketCode()" class="btn btn-action w-full max-w-sm mb-3 text-sm">
                 <i class="fas fa-share-alt mr-2"></i> 系統分享 (Line/Email)
             </button>
-
             <button onclick="document.getElementById('ticket-modal').classList.add('hidden')" class="text-white underline text-sm mt-2 mb-10">關閉</button>
         </div>
 
@@ -372,7 +339,7 @@
                 document.getElementById('setup-panel').scrollIntoView();
                 document.getElementById('jsonInput').focus();
                 history.replaceState(null, null, ' ');
-                Swal.fire({icon: 'info', title: '歡迎回來', text: '請貼上 JSON', timer: 2000, showConfirmButton: false});
+                // V3.15: 移除了彈窗，只聚焦
             }
             const params = new URLSearchParams(window.location.search);
             const compressedMenu = params.get('menu');
@@ -432,6 +399,15 @@
                 if (!jsonMatch) throw new Error("找不到 JSON");
                 menuData = JSON.parse(jsonMatch[0]);
                 if (!menuData.m) throw new Error("格式錯誤");
+                
+                // V3.15: 自動分配 ID (編碼)
+                let globalIdx = 0;
+                menuData.m.forEach(cat => {
+                    cat.i.forEach(item => {
+                        item._id = globalIdx++; // 分配唯一 ID
+                    });
+                });
+
                 saveToHistory(menuData);
                 generateLinkAndShow();
             } catch (e) { Swal.fire('解析失敗', e.message, 'error'); }
@@ -554,7 +530,8 @@
             let notes = [];
             document.querySelectorAll('.option-tag.active').forEach(tag => { const t = tag.innerText.trim(); if(t!=='其他') notes.push(t); });
             const other = document.getElementById('note-other-input').value.trim(); if(other) notes.push(other);
-            myCart.push({ n: tempItem.n, p: tempItem.p, o: notes.join(', ') });
+            // V3.15: 儲存時包含 _id
+            myCart.push({ _id: tempItem._id, n: tempItem.n, p: tempItem.p, o: notes.join(', ') });
             updateCartBadge(); closeNoteModal();
             const Toast = Swal.mixin({toast: true, position: 'top', showConfirmButton: false, timer: 1000});
             Toast.fire({icon: 'success', title: '已加入購物車'});
@@ -615,9 +592,9 @@
                 btn.innerHTML = '<i class="fas fa-plus-circle mr-1"></i> 加入總表';
                 btn.className = "btn text-sm text-lg shadow-lg animate-pulse text-white bg-blue-600 hover:bg-blue-700"; 
             } else {
-                hint.innerText = "同事：確認無誤 ➔ 生成 QR Code";
+                hint.innerText = "同事：確認無誤 ➔ 生成 QR CODE";
                 hint.className = "text-xs text-center text-green-600 font-bold bg-green-50 py-2 rounded mb-3 border border-green-100";
-                btn.innerHTML = '<i class="fas fa-qrcode mr-1"></i> 生成 QR Code';
+                btn.innerHTML = '<i class="fas fa-qrcode mr-1"></i> 生成 QR CODE';
                 btn.className = "btn text-sm text-lg shadow-lg animate-pulse text-white bg-green-600 hover:bg-green-700"; 
             }
 
@@ -636,9 +613,12 @@
         function finalSubmit() {
             closeCartModal();
             if (isCaptainMode) {
+                // V3.15: 團長合併時也需轉換格式，但因為是本地直接加，直接用 myCart 結構即可
+                // 不過為了統一，我們可以模擬成"接收到的訂單"
+                // 這裡簡單處理：將 myCart 內的項目 (含 _id) 直接加進去
                 const orderData = { n: userInfo.name, t: userInfo.phone, d: [...myCart] };
                 const key = `${orderData.n}-${orderData.t}`;
-                addOrderToSystem(key, orderData);
+                addOrderToSystem(key, orderData); 
                 myCart = []; updateCartBadge();
                 Swal.fire('成功', '團長訂單已加入總結', 'success');
             } else {
@@ -657,26 +637,30 @@
             document.getElementById('guestInfoDisplay').classList.add('hidden'); Swal.fire('已重置', '下次點餐請重新輸入資料', 'info');
         }
         
-        // V3.14 重點修復：QR 生成流程
+        // V3.15: 產生輕量化 Payload (使用 _id)
         function generateOrderTicket() {
             let total = 0;
+            // 視覺清單 (給人看)
             const itemsHtml = myCart.map(i => {
                 total += i.p;
                 return `<div class="border-b pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>${i.o ? `<span class="text-xs text-orange-500">└ ${i.o}</span>` : ''}</div>`;
             }).join("");
-            const orderStr = JSON.stringify({ n: userInfo.name, t: userInfo.phone, d: myCart });
+            
+            // 核心變更：傳輸清單 (給機器看) - 只傳 ID 和 備註
+            // Payload 結構: {n:名, t:電, d:[{i:ID, o:備註}]}
+            const payloadItems = myCart.map(item => ({ i: item._id, o: item.o }));
+            const orderPayload = { n: userInfo.name, t: userInfo.phone, d: payloadItems };
+            const orderStr = JSON.stringify(orderPayload);
             
             document.getElementById('ticket-store').textContent = menuData.r;
             document.getElementById('ticket-name').textContent = userInfo.name;
             document.getElementById('ticket-phone').textContent = userInfo.phone;
             document.getElementById('ticket-items').innerHTML = itemsHtml;
             document.getElementById('ticket-total').textContent = "$" + total;
-            document.getElementById('ticket-raw-code').value = orderStr; // V3.14 填入代碼
+            document.getElementById('ticket-raw-code').value = orderStr;
             
-            // 先顯示 Modal
             document.getElementById('ticket-modal').classList.remove('hidden');
             
-            // 延遲渲染 QR，確保 DOM 可見
             const qrContainer = document.getElementById('orderQRCode');
             qrContainer.innerHTML = "";
             setTimeout(() => {
@@ -736,19 +720,52 @@
         
         function onScanSuccess(decodedText) {
             try {
-                const order = JSON.parse(decodedText);
-                if (!order.n || !order.d) throw new Error();
+                const payload = JSON.parse(decodedText);
+                if (!payload.n || !payload.d) throw new Error();
+                
+                // V3.15: 還原訂單 (Rehydrate)
+                // 將傳來的 {i: ID, o: Note} 還原成完整 {n: Name, p: Price, o: Note}
+                const rehydratedItems = [];
+                // 建立 ID 對照表
+                const idMap = {};
+                menuData.m.forEach(cat => cat.i.forEach(item => idMap[item._id] = item));
+
+                payload.d.forEach(pItem => {
+                    const originalItem = idMap[pItem.i];
+                    if(originalItem) {
+                        rehydratedItems.push({
+                            n: originalItem.n,
+                            p: originalItem.p,
+                            o: pItem.o // 使用訂單中的備註
+                        });
+                    }
+                });
+
+                // 建構標準訂單格式
+                const order = {
+                    n: payload.n,
+                    t: payload.t,
+                    d: rehydratedItems
+                };
+
                 if(html5QrcodeScanner) html5QrcodeScanner.pause();
                 const key = `${order.n}-${order.t}`;
+                
+                // 自動合併
                 addOrderToSystem(key, order);
                 Swal.fire({icon: 'success', title: `${order.n} 訂單已加入`, timer: 1000, showConfirmButton: false});
                 if(html5QrcodeScanner) html5QrcodeScanner.resume();
+                
             } catch (e) { if(!html5QrcodeScanner) Swal.fire("無效代碼", "格式錯誤", "error"); }
         }
 
         function addOrderToSystem(key, order) {
-            if (allOrders[key]) allOrders[key].d = allOrders[key].d.concat(order.d);
-            else { order.paid = false; allOrders[key] = order; }
+            if (allOrders[key]) {
+                allOrders[key].d = allOrders[key].d.concat(order.d);
+            } else {
+                order.paid = false;
+                allOrders[key] = order;
+            }
             updateOrderBadge();
             if(!document.getElementById('summary-panel').classList.contains('hidden')) showSummary();
         }
