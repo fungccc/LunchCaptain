@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LunchCaptain V3.12</title>
+    <title>LunchCaptain V3.13</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
@@ -22,7 +22,6 @@
         .btn-action { @apply bg-indigo-600 text-white hover:bg-indigo-700; }
         .btn-warning { @apply bg-orange-500 text-white hover:bg-orange-600; }
         .btn-teal { @apply bg-teal-600 text-white hover:bg-teal-700; }
-        .btn-danger { @apply bg-red-500 text-white hover:bg-red-600; }
         .btn-outline { @apply border-2 border-gray-300 text-gray-600 hover:bg-gray-100; }
         
         .card { @apply bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-4; }
@@ -81,7 +80,7 @@
             </div>
             <div>
                 <h1 class="text-lg font-bold tracking-wide leading-tight">LunchCaptain</h1>
-                <p class="text-[10px] text-gray-400">團長救星 v3.12</p>
+                <p class="text-[10px] text-gray-400">團長救星 v3.13</p>
             </div>
         </div>
         <div id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></div>
@@ -112,7 +111,26 @@
                     <option value="">🚫 不需翻譯 (預設)</option>
                     <option value="Traditional Chinese">1. 中文 (繁體)</option>
                     <option value="English">2. 英文</option>
-                    </select>
+                    <option value="Japanese">3. 日文</option>
+                    <option value="Korean">4. 韓文</option>
+                    <option value="Thai">5. 泰文</option>
+                    <option value="Vietnamese">6. 越南文</option>
+                    <option value="French">7. 法文</option>
+                    <option value="Italian">8. 義大利文</option>
+                    <option value="Spanish">9. 西班牙文</option>
+                    <option value="German">10. 德文</option>
+                    <option value="Portuguese">11. 葡萄牙文</option>
+                    <option value="Russian">12. 俄文</option>
+                    <option value="Arabic">13. 阿拉伯文</option>
+                    <option value="Indonesian">14. 印尼文</option>
+                    <option value="Tagalog">15. 他加祿文</option>
+                    <option value="Turkish">16. 土耳其文</option>
+                    <option value="Persian">17. 波斯文</option>
+                    <option value="Hindi">18. 印地文</option>
+                    <option value="Bengali">19. 孟加拉文</option>
+                    <option value="Swahili">20. 斯瓦希里文</option>
+                    <option value="Czech">21. 捷克文</option>
+                </select>
             </div>
 
             <div class="card">
@@ -523,7 +541,7 @@
             document.getElementById('cartCount').style.display = count > 0 ? 'flex' : 'none';
         }
 
-        // --- 結算 ---
+        // --- 結算 (V3.13) ---
         async function checkOut() {
             if (myCart.length === 0) return Swal.fire('購物車空的', '請先點選餐點', 'warning');
             
@@ -532,7 +550,7 @@
                     title: '請輸入訂購人資料',
                     html: `<input id="swal-1" class="swal2-input" placeholder="名字" value="${userInfo.name||''}"><input id="swal-2" class="swal2-input" type="tel" placeholder="電話後3碼" value="${userInfo.phone||''}">`,
                     focusConfirm: false, allowOutsideClick: false, preConfirm: () => {
-                        const n = document.getElementById('swal-1').value, p = document.getElementById('swal-2').value;
+                        const n = document.getElementById('swal-input1').value, p = document.getElementById('swal-2').value;
                         if (!n || !p) { Swal.showValidationMessage('請填寫完整資料'); return false; }
                         return [n, p];
                     }
@@ -541,10 +559,10 @@
                     userInfo.name = vals[0]; userInfo.phone = vals[1];
                     localStorage.setItem('lunch_captain_user', JSON.stringify(userInfo));
                     updateUserDisplay();
-                    openCartModal();
+                    openCartModal(); // 資料填完，打開購物車確認
                 }
             } else {
-                openCartModal();
+                openCartModal(); // 資料已有，直接打開
             }
         }
 
@@ -572,7 +590,6 @@
                 hint.innerText = "團長：確認無誤 ➔ 加入總表";
                 hint.className = "text-xs text-center text-blue-600 font-bold bg-blue-50 py-2 rounded mb-3 border border-blue-100";
                 btn.innerHTML = '<i class="fas fa-plus-circle mr-1"></i> 加入總表';
-                // V3.12 樣式強制修正：移除 btn-primary, 直接用 bg-blue-600
                 btn.className = "btn text-sm text-lg shadow-lg animate-pulse text-white bg-blue-600 hover:bg-blue-700"; 
             } else {
                 hint.innerText = "同事：確認無誤 ➔ 生成 QR Code";
@@ -590,18 +607,21 @@
             myCart.splice(idx, 1);
             updateCartBadge();
             if (myCart.length === 0) { closeCartModal(); Swal.fire('已清空', '購物車內沒有餐點了', 'info'); }
-            else openCartModal();
+            else openCartModal(); // 重繪
         }
 
         function finalSubmit() {
             closeCartModal();
+            // 分流邏輯
             if (isCaptainMode) {
+                // 團長：直接加總表
                 const orderData = { n: userInfo.name, t: userInfo.phone, d: [...myCart] };
                 const key = `${orderData.n}-${orderData.t}`;
                 addOrderToSystem(key, orderData); // V3.12 新增：支援累加
                 myCart = []; updateCartBadge();
                 Swal.fire('成功', '團長訂單已加入總結', 'success');
             } else {
+                // 同事：產 QR
                 generateOrderTicket();
             }
         }
@@ -616,6 +636,8 @@
             userInfo = { name: '', phone: '' }; localStorage.removeItem('lunch_captain_user');
             document.getElementById('guestInfoDisplay').classList.add('hidden'); Swal.fire('已重置', '下次點餐請重新輸入資料', 'info');
         }
+        
+        // V3.13: 優化 QR 生成邏輯，確保先顯示視窗再繪製
         function generateOrderTicket() {
             let total = 0;
             const itemsHtml = myCart.map(i => {
@@ -623,16 +645,31 @@
                 return `<div class="border-b pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>${i.o ? `<span class="text-xs text-orange-500">└ ${i.o}</span>` : ''}</div>`;
             }).join("");
             const orderStr = JSON.stringify({ n: userInfo.name, t: userInfo.phone, d: myCart });
+            
             document.getElementById('ticket-store').textContent = menuData.r;
             document.getElementById('ticket-name').textContent = userInfo.name;
             document.getElementById('ticket-phone').textContent = userInfo.phone;
             document.getElementById('ticket-items').innerHTML = itemsHtml;
             document.getElementById('ticket-total').textContent = "$" + total;
-            const qr = document.getElementById('orderQRCode'); qr.innerHTML = "";
-            new QRCode(qr, { text: orderStr, width: 180, height: 180 });
             document.getElementById('ticket-modal').dataset.orderString = orderStr;
+            
+            // 先顯示 Modal
             document.getElementById('ticket-modal').classList.remove('hidden');
+            
+            // 清空舊的 QR
+            const qrContainer = document.getElementById('orderQRCode');
+            qrContainer.innerHTML = "";
+            
+            // 延遲一點點繪製，確保 DOM 已渲染
+            setTimeout(() => {
+                try {
+                    new QRCode(qrContainer, { text: orderStr, width: 180, height: 180 });
+                } catch(e) {
+                    qrContainer.innerHTML = "<p class='text-red-500 text-xs'>QR 生成失敗，請用代碼</p>";
+                }
+            }, 100);
         }
+        
         function downloadTicket() {
             html2canvas(document.getElementById('ticket-content')).then(cvs => {
                 const a = document.createElement('a'); a.download = `Order_${userInfo.name}.png`; a.href = cvs.toDataURL(); a.click();
@@ -660,7 +697,6 @@
             document.getElementById('manualOrderInput').value = "";
         }
         
-        // V3.12 修改：合併邏輯
         function onScanSuccess(decodedText) {
             try {
                 const order = JSON.parse(decodedText);
@@ -676,7 +712,7 @@
             } catch (e) { if(!html5QrcodeScanner) Swal.fire("無效代碼", "格式錯誤", "error"); }
         }
 
-        // V3.12 修改：累積訂單 (Merge items)
+        // V3.12: 累積訂單 (Merge items)
         function addOrderToSystem(key, order) {
             if (allOrders[key]) {
                 // 如果人已存在，合併清單
