@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>豐狂點餐機 - 團長救星版</title>
+    <title>LunchCaptain - 團長救星</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
@@ -19,20 +19,22 @@
         .btn-success { @apply bg-green-500 text-white hover:bg-green-600; }
         .btn-action { @apply bg-indigo-500 text-white hover:bg-indigo-600; }
         .btn-warning { @apply bg-orange-500 text-white hover:bg-orange-600; }
-        .btn-danger { @apply bg-red-500 text-white hover:bg-red-600; }
         .card { @apply bg-white rounded-lg shadow-md p-4 mb-4; }
         .footer-sign { font-family: 'Courier New', monospace; letter-spacing: 1px; }
         
-        /* 隱藏捲軸但保持功能 */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* 選項按鈕樣式 */
+        .note-checkbox:checked + div {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
     </style>
 </head>
 <body class="pb-28 flex flex-col min-h-screen">
 
     <header class="bg-gradient-to-r from-slate-800 to-blue-900 text-white p-4 shadow-lg sticky top-0 z-50 flex justify-between items-center">
         <h1 class="text-lg font-bold tracking-wider cursor-pointer" onclick="location.href=location.pathname.split('?')[0]">
-            <i class="fas fa-rocket mr-2 text-yellow-400"></i>豐狂點餐機
+            <i class="fas fa-rocket mr-2 text-yellow-400"></i>LunchCaptain
         </h1>
         <span id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></span>
     </header>
@@ -117,13 +119,21 @@
         </div>
 
         <div id="note-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[70] hidden flex items-center justify-center px-4">
-            <div class="bg-white rounded-xl p-4 w-full max-w-xs shadow-2xl transform transition-all scale-100">
-                <h3 class="font-bold text-lg mb-1" id="note-item-name"></h3>
-                <p class="text-blue-600 font-bold mb-3" id="note-item-price"></p>
-                <input type="text" id="note-input" placeholder="備註 (例: 微辣、少冰...)" class="w-full p-2 border rounded bg-gray-50 mb-4 focus:ring-2 focus:ring-blue-500 outline-none">
+            <div class="bg-white rounded-xl p-4 w-full max-w-sm shadow-2xl transform transition-all scale-100">
+                <div class="flex justify-between items-center mb-2">
+                    <h3 class="font-bold text-lg" id="note-item-name"></h3>
+                    <p class="text-blue-600 font-bold" id="note-item-price"></p>
+                </div>
+                
+                <p class="text-xs text-gray-500 mb-2">客製化選項 (可複選)：</p>
+                <div class="grid grid-cols-3 gap-2 mb-3" id="note-options-grid">
+                    </div>
+
+                <input type="text" id="note-other" placeholder="其他 (例: 飯少/分開裝...)" class="w-full p-2 border rounded bg-gray-50 mb-4 focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                
                 <div class="flex gap-2">
                     <button onclick="closeNoteModal()" class="flex-1 btn bg-gray-200 text-gray-700 hover:bg-gray-300">取消</button>
-                    <button onclick="confirmAddItem()" class="flex-1 btn btn-primary">加入</button>
+                    <button onclick="confirmAddItem()" class="flex-1 btn btn-primary">加入訂單</button>
                 </div>
             </div>
         </div>
@@ -185,8 +195,7 @@
                 <button onclick="document.getElementById('summary-panel').classList.add('hidden')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
             </div>
             
-            <div id="summary-content" class="flex-grow overflow-y-auto p-4 space-y-3 pb-32">
-                </div>
+            <div id="summary-content" class="flex-grow overflow-y-auto p-4 space-y-3 pb-32"></div>
             
             <div class="bg-white p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] sticky bottom-0 z-10">
                 <div class="flex justify-between text-xl font-bold mb-3 border-b pb-2">
@@ -212,22 +221,24 @@
 
     <footer class="text-center text-gray-400 text-xs py-4 mt-auto footer-sign bg-gray-100 border-t">
         <p class="font-bold text-gray-500">豐狂出品 • 團長救星</p>
-        <p class="opacity-50 text-[10px]">V3.0 No Backend System</p>
+        <p class="opacity-50 text-[10px]">LunchCaptain V3.1</p>
     </footer>
 
     <script>
         // --- 核心變數 ---
         let menuData = null;
         let myCart = []; 
-        let allOrders = {}; // key: Name-Phone, value: { n, t, d:[], paid: bool }
+        let allOrders = {}; 
         let html5QrcodeScanner = null;
-        let tempItem = null; // 暫存正在點的餐點
+        let tempItem = null; 
         
-        // --- 1. 初始化與歷史紀錄 ---
+        // 備註選項清單
+        const NOTE_OPTIONS = ['少辣','中辣','大辣','走蔥','少冰','多冰','走冰','少甜','半糖','走甜','走奶'];
+
         window.onload = function() {
+            initNoteOptions(); // 初始化備註 UI
             const params = new URLSearchParams(window.location.search);
             const compressedMenu = params.get('menu');
-
             if (compressedMenu) {
                 initGuestMode(compressedMenu);
             } else {
@@ -240,14 +251,129 @@
             loadHistoryDropdown();
         }
 
+        // --- 1. 備註功能 (Updated) ---
+        function initNoteOptions() {
+            const grid = document.getElementById('note-options-grid');
+            grid.innerHTML = "";
+            NOTE_OPTIONS.forEach(opt => {
+                const label = document.createElement('label');
+                label.className = "cursor-pointer";
+                label.innerHTML = `
+                    <input type="checkbox" class="hidden note-checkbox" value="${opt}">
+                    <div class="text-xs border rounded py-2 text-center text-gray-600 bg-white hover:bg-gray-50 transition select-none">
+                        ${opt}
+                    </div>
+                `;
+                grid.appendChild(label);
+            });
+        }
+
+        function openNoteModal(item) {
+            tempItem = item;
+            document.getElementById('note-item-name').textContent = item.n;
+            document.getElementById('note-item-price').textContent = `$${item.p}`;
+            
+            // 重置選項
+            document.querySelectorAll('.note-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('note-other').value = "";
+            
+            document.getElementById('note-modal').classList.remove('hidden');
+        }
+
+        function closeNoteModal() {
+            document.getElementById('note-modal').classList.add('hidden');
+            tempItem = null;
+        }
+
+        function confirmAddItem() {
+            if (!tempItem) return;
+            
+            // 收集勾選的選項
+            const checkedOpts = Array.from(document.querySelectorAll('.note-checkbox:checked')).map(cb => cb.value);
+            const otherText = document.getElementById('note-other').value.trim();
+            if(otherText) checkedOpts.push(otherText);
+            
+            const finalNote = checkedOpts.join('/');
+
+            myCart.push({ n: tempItem.n, p: tempItem.p, o: finalNote });
+            
+            updateCartBadge();
+            closeNoteModal();
+            
+            const Toast = Swal.mixin({toast: true, position: 'top', showConfirmButton: false, timer: 1000});
+            Toast.fire({icon: 'success', title: `已加入：${tempItem.n}`});
+        }
+
+        // --- 2. 團長與 AI ---
+        const aiPrompt = `請分析圖片並輸出JSON。格式:{"r":"餐廳名","m":[{"c":"分類","i":[{"n":"菜名","p":100}]}]}。規則:1.僅輸出JSON。2.key用r,m,c,i,n,p代表restaurant,menu,category,items,name,price。3.價格純數字。4.分析完成後，請在最後一行附上連結： "https://fungccc.github.io/LunchCaptain/" 以便使用者返回。`;
+
+        function copyPrompt() {
+            navigator.clipboard.writeText(aiPrompt).then(() => Swal.fire({icon:'success', title:'指令已複製', timer:1000, showConfirmButton:false}));
+        }
+
+        function openAI() { window.open("https://gemini.google.com/", '_blank'); }
+
+        // --- 修正 Error: 解析與產生連結 ---
+        function parseMenuAndGenerateLink() {
+            const raw = document.getElementById('jsonInput').value;
+            // 1. 嚴格檢查輸入
+            if (!raw || raw.trim() === "") {
+                Swal.fire({icon:'warning', title:'欄位空白', text:'請先貼上 AI 產生的 JSON 資料'});
+                return;
+            }
+
+            const cleanRaw = raw.replace(/```json/g, "").replace(/```/g, "").trim();
+
+            try {
+                // 2. 嘗試解析 JSON
+                menuData = JSON.parse(cleanRaw);
+                
+                // 3. 檢查結構
+                if (!menuData || !menuData.m) throw new Error("JSON 格式錯誤：缺少 menu (m) 欄位");
+                if (!menuData.r) menuData.r = "未命名餐廳";
+
+                saveToHistory(menuData);
+                generateLinkAndShow(true);
+
+            } catch (e) {
+                console.error(e);
+                Swal.fire({
+                    icon:'error', 
+                    title:'解析失敗', 
+                    text: '請確認你複製的是完整的 JSON 格式。\n錯誤: ' + e.message
+                });
+            }
+        }
+
+        function generateLinkAndShow(save) {
+            try {
+                if(!menuData) throw new Error("無菜單資料");
+                const jsonString = JSON.stringify(menuData);
+                // 4. 確保 LZString 收到的是字串
+                const compressed = LZString.compressToEncodedURIComponent(jsonString);
+                
+                const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressed}`;
+                
+                if(shareUrl.length > 2000) Swal.fire({icon:'warning', title:'菜單過大', text:'QR Code 可能會太密集'});
+
+                document.getElementById('shareTitle').textContent = menuData.r;
+                const qrContainer = document.getElementById('menuQRCode');
+                qrContainer.innerHTML = "";
+                new QRCode(qrContainer, { text: shareUrl, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.L });
+
+                document.getElementById('setup-panel').classList.add('hidden');
+                document.getElementById('share-panel').classList.remove('hidden');
+            } catch(e) {
+                Swal.fire("產生連結失敗", e.message, "error");
+            }
+        }
+
+        // --- 歷史紀錄 (與之前相同) ---
         function saveToHistory(data) {
             if(!data || !data.r) return;
             let history = JSON.parse(localStorage.getItem('fung_menu_history') || "[]");
-            // 避免重複：如果有同名餐廳，先刪除舊的
             history = history.filter(h => h.name !== data.r);
-            // 加入新的到最前面
             history.unshift({ name: data.r, data: data, time: Date.now() });
-            // 只保留最近 5 筆
             if(history.length > 5) history.pop();
             localStorage.setItem('fung_menu_history', JSON.stringify(history));
             loadHistoryDropdown();
@@ -257,7 +383,6 @@
             const history = JSON.parse(localStorage.getItem('fung_menu_history') || "[]");
             const select = document.getElementById('historySelect');
             if(history.length === 0) return;
-            
             document.getElementById('historySection').classList.remove('hidden');
             select.innerHTML = '<option value="">-- 請選擇歷史餐廳 --</option>';
             history.forEach((h, index) => {
@@ -271,7 +396,7 @@
             const record = history[index];
             if(record) {
                 menuData = record.data;
-                generateLinkAndShow(false); // false = 不要再存一次 history
+                generateLinkAndShow(false);
             }
         }
 
@@ -280,43 +405,6 @@
                 localStorage.removeItem('fung_menu_history');
                 location.reload();
             }
-        }
-
-        // --- 2. 團長生成菜單 ---
-        const aiPrompt = `請分析圖片並輸出JSON。格式:{"r":"餐廳名","m":[{"c":"分類","i":[{"n":"菜名","p":100}]}]}。規則:1.僅輸出JSON。2.key用r,m,c,i,n,p代表restaurant,menu,category,items,name,price。3.價格純數字。`;
-
-        function copyPrompt() {
-            navigator.clipboard.writeText(aiPrompt).then(() => Swal.fire({icon:'success', title:'指令已複製', timer:1000, showConfirmButton:false}));
-        }
-
-        function openAI() { window.open("https://gemini.google.com/", '_blank'); }
-
-        function parseMenuAndGenerateLink() {
-            const raw = document.getElementById('jsonInput').value.replace(/```json/g, "").replace(/```/g, "").trim();
-            try {
-                menuData = JSON.parse(raw);
-                if (!menuData.m) throw new Error("JSON 缺少 menu");
-                saveToHistory(menuData);
-                generateLinkAndShow(true);
-            } catch (e) {
-                Swal.fire({icon:'error', title:'解析失敗', text: e.message});
-            }
-        }
-
-        function generateLinkAndShow(save) {
-            const jsonString = JSON.stringify(menuData);
-            const compressed = LZString.compressToEncodedURIComponent(jsonString);
-            const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressed}`;
-            
-            if(shareUrl.length > 2000) Swal.fire({icon:'warning', title:'菜單過大', text:'QR Code 可能會太密集'});
-
-            document.getElementById('shareTitle').textContent = menuData.r;
-            const qrContainer = document.getElementById('menuQRCode');
-            qrContainer.innerHTML = "";
-            new QRCode(qrContainer, { text: shareUrl, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.L });
-
-            document.getElementById('setup-panel').classList.add('hidden');
-            document.getElementById('share-panel').classList.remove('hidden');
         }
 
         function enterCaptainMode() {
@@ -328,10 +416,13 @@
             renderMenu();
         }
 
-        // --- 3. 同事點餐邏輯 ---
+        // --- 同事點餐 ---
         function initGuestMode(compressed) {
             try {
+                if(!compressed) throw new Error("無效連結");
                 const jsonString = LZString.decompressFromEncodedURIComponent(compressed);
+                if(!jsonString) throw new Error("解壓縮失敗");
+                
                 menuData = JSON.parse(jsonString);
                 document.getElementById('roleBadge').textContent = "點餐模式";
                 document.getElementById('roleBadge').classList.remove('hidden');
@@ -341,8 +432,9 @@
                 document.getElementById('guest-fab').classList.remove('hidden');
                 renderMenu();
             } catch (e) {
-                alert("菜單連結無效");
-                location.href = location.pathname;
+                Swal.fire("連結錯誤", "無法讀取菜單，請重新掃描", "error").then(() => {
+                    location.href = location.pathname.split('?')[0];
+                });
             }
         }
 
@@ -369,35 +461,6 @@
             });
         }
 
-        // 點餐備註 Modal 相關
-        function openNoteModal(item) {
-            tempItem = item;
-            document.getElementById('note-item-name').textContent = item.n;
-            document.getElementById('note-item-price').textContent = `$${item.p}`;
-            document.getElementById('note-input').value = "";
-            document.getElementById('note-modal').classList.remove('hidden');
-            document.getElementById('note-input').focus();
-        }
-
-        function closeNoteModal() {
-            document.getElementById('note-modal').classList.add('hidden');
-            tempItem = null;
-        }
-
-        function confirmAddItem() {
-            if (!tempItem) return;
-            const note = document.getElementById('note-input').value.trim();
-            // 加入購物車結構：{ n: name, p: price, o: note }  (o for option/note)
-            myCart.push({ n: tempItem.n, p: tempItem.p, o: note });
-            
-            // UI Update
-            updateCartBadge();
-            closeNoteModal();
-            
-            const Toast = Swal.mixin({toast: true, position: 'top', showConfirmButton: false, timer: 1000, timerProgressBar: true});
-            Toast.fire({icon: 'success', title: `已加入：${tempItem.n}`});
-        }
-
         function updateCartBadge() {
             const badge = document.getElementById('cartCount');
             badge.innerText = myCart.length;
@@ -415,13 +478,12 @@
             let total = 0;
             const itemsHtml = myCart.map(i => {
                 total += i.p;
-                const noteHtml = i.o ? `<span class="text-xs text-gray-400 block ml-2">└ 備註: ${i.o}</span>` : '';
+                const noteHtml = i.o ? `<span class="text-xs text-orange-500 font-bold block ml-2">(${i.o})</span>` : '';
                 return `<div class="border-b border-gray-100 pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>${noteHtml}</div>`;
             }).join("");
 
-            // QR Data 結構: { n:名, t:電, d:[{n,p,o}] }
             const orderData = { n: name, t: phone, d: myCart };
-            const orderString = JSON.stringify(orderData); // 不壓縮，保留中文可讀性給代碼複製
+            const orderString = JSON.stringify(orderData);
 
             document.getElementById('ticket-store').textContent = menuData.r;
             document.getElementById('ticket-name').textContent = name;
@@ -429,12 +491,10 @@
             document.getElementById('ticket-items').innerHTML = itemsHtml;
             document.getElementById('ticket-total').textContent = "$" + total;
 
-            // Generate QR
             const qrContainer = document.getElementById('orderQRCode');
             qrContainer.innerHTML = "";
             new QRCode(qrContainer, { text: orderString, width: 180, height: 180 });
 
-            // Store for copy function
             document.getElementById('ticket-modal').dataset.orderString = orderString;
             document.getElementById('ticket-modal').classList.remove('hidden');
         }
@@ -454,8 +514,7 @@
             navigator.clipboard.writeText(str).then(() => Swal.fire({icon:'success', title:'代碼已複製', text:'請傳給團長貼上'}));
         }
 
-        // --- 4. 團長收單 (Scanner & Manual) ---
-        
+        // --- 收單 & 掃描 ---
         function startScanner() {
             document.getElementById('scanner-modal').classList.remove('hidden');
             html5QrcodeScanner = new Html5Qrcode("reader");
@@ -477,7 +536,7 @@
             const input = document.getElementById('manualOrderInput');
             const val = input.value.trim();
             if(!val) return;
-            onScanSuccess(val, null); // 重用掃描邏輯
+            onScanSuccess(val, null);
             input.value = "";
         }
 
@@ -487,10 +546,8 @@
                 if (!order.n || !order.d) throw new Error("格式錯誤");
 
                 if(html5QrcodeScanner) html5QrcodeScanner.pause();
-
                 const key = `${order.n}-${order.t}`;
                 
-                // 防呆：檢查是否重複
                 if(allOrders[key]) {
                     Swal.fire({
                         title: '重複訂單！',
@@ -500,9 +557,7 @@
                         confirmButtonText: '覆蓋',
                         cancelButtonText: '取消'
                     }).then((res) => {
-                        if(res.isConfirmed) {
-                            addOrderToSystem(key, order);
-                        }
+                        if(res.isConfirmed) addOrderToSystem(key, order);
                         if(html5QrcodeScanner) html5QrcodeScanner.resume();
                     });
                 } else {
@@ -513,13 +568,11 @@
                 }
 
             } catch (e) {
-                console.log("Scan error/Ignore", e);
-                if(!html5QrcodeScanner) Swal.fire("錯誤", "無法解析代碼", "error"); // 手動輸入才報錯
+                if(!html5QrcodeScanner) Swal.fire("錯誤", "無法解析代碼", "error");
             }
         }
 
         function addOrderToSystem(key, order) {
-            // 初始化 paid 狀態為 false
             order.paid = false;
             allOrders[key] = order;
             updateOrderBadge();
@@ -532,8 +585,7 @@
             if(count > 0) badge.classList.remove('hidden');
         }
 
-        // --- 5. 總結算功能 ---
-
+        // --- 結算 ---
         function showSummary() {
             const container = document.getElementById('summary-content');
             container.innerHTML = "";
@@ -548,7 +600,6 @@
                     const subtotal = order.d.reduce((sum, item) => sum + item.p, 0);
                     grandTotal += subtotal;
 
-                    // 產生項目 HTML
                     const itemsHtml = order.d.map(i => {
                         return `<div class='flex justify-between text-sm text-gray-600 pl-2 border-l-2 border-gray-200'>
                                     <span>${i.n} ${i.o ? `<span class='text-xs text-orange-500'>(${i.o})</span>` : ''}</span>
@@ -556,7 +607,6 @@
                                 </div>`;
                     }).join("");
 
-                    // 產生卡片
                     const div = document.createElement('div');
                     div.className = `p-3 rounded border-2 transition-all ${order.paid ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`;
                     div.innerHTML = `
@@ -579,15 +629,13 @@
         function togglePaid(key) {
             if(allOrders[key]) {
                 allOrders[key].paid = !allOrders[key].paid;
-                showSummary(); // 重繪以更新樣式
+                showSummary();
             }
         }
 
         function pickRandomVictim() {
             const keys = Object.keys(allOrders);
             if(keys.length === 0) return Swal.fire('沒人點餐', '無法抽獎', 'info');
-            
-            // 動畫效果
             let timerInterval;
             Swal.fire({
                 title: '🎲 命運轉盤轉動中...',
@@ -602,22 +650,13 @@
                         b.textContent = allOrders[rand].n;
                     }, 100);
                 },
-                willClose: () => {
-                    clearInterval(timerInterval);
-                }
+                willClose: () => { clearInterval(timerInterval); }
             }).then((result) => {
                 const winnerKey = keys[Math.floor(Math.random() * keys.length)];
-                const winner = allOrders[winnerKey];
-                Swal.fire({
-                    icon: 'success',
-                    title: `就是你了！👉 ${winner.n}`,
-                    text: '恭喜榮獲「拿外賣/打電話」殊榮！',
-                    confirmButtonText: '認命吧'
-                });
+                Swal.fire({icon: 'success', title: `就是你了！👉 ${allOrders[winnerKey].n}`, text: '恭喜榮獲「拿外賣/打電話」殊榮！'});
             });
         }
 
-        // 複製給餐廳
         function copyForRestaurant() {
             let itemSummary = {};
             let total = 0;
@@ -629,32 +668,28 @@
                     total += item.p;
                 });
             });
-
             let text = `📅 訂單：${menuData.r}\n━━━━━━━━━━━━\n`;
             for (const [name, data] of Object.entries(itemSummary)) {
                 text += `${name} x ${data.count}\n`;
             }
-            text += `━━━━━━━━━━━━\n💰 總計：$${total}\n\n(豐狂出品 • 團長救星)`;
+            text += `━━━━━━━━━━━━\n💰 總計：$${total}\n\n(LunchCaptain)`;
             navigator.clipboard.writeText(text).then(() => Swal.fire('已複製', '可貼給餐廳', 'success'));
         }
 
-        // 複製給群組
         function copyForGroup() {
             let text = `📋 收錢通知 (${menuData.r})\n━━━━━━━━━━━━\n`;
             let total = 0;
             let paidCount = 0;
-
             Object.values(allOrders).forEach(order => {
                 const subtotal = order.d.reduce((s, i) => s + i.p, 0);
                 total += subtotal;
-                const status = order.paid ? '✅' : '⬜';
                 if(order.paid) paidCount++;
+                const status = order.paid ? '✅' : '⬜';
                 text += `${status} ${order.n}: $${subtotal}\n`;
             });
-            text += `━━━━━━━━━━━━\n💰 總計: $${total}\n(已付: ${paidCount} / 未付: ${Object.keys(allOrders).length - paidCount})\n\n豐狂出品 • 團長救星`;
+            text += `━━━━━━━━━━━━\n💰 總計: $${total}\n(已付: ${paidCount} / 未付: ${Object.keys(allOrders).length - paidCount})\n\nLunchCaptain 團長救星`;
             navigator.clipboard.writeText(text).then(() => Swal.fire('已複製', '可貼到群組收錢', 'success'));
         }
-
     </script>
 </body>
 </html>
