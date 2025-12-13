@@ -23,9 +23,11 @@
         .card { @apply bg-white rounded-xl shadow-lg p-5 mb-4 border border-gray-100; }
         .footer-sign { font-family: 'Courier New', monospace; letter-spacing: 1px; }
         
+        /* 選項樣式 */
         .option-tag { @apply border border-gray-300 rounded px-3 py-1 text-sm cursor-pointer hover:bg-blue-50 transition select-none; }
         .option-tag.active { @apply bg-blue-600 text-white border-blue-600; }
         
+        /* 下拉選單美化 */
         .custom-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
             background-position: right 0.5rem center;
@@ -41,7 +43,7 @@
 
     <header class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50 flex justify-between items-center">
         <h1 class="text-lg font-bold tracking-wider cursor-pointer flex items-center" onclick="location.href=location.pathname.split('#')[0]">
-            <i class="fas fa-utensils mr-2 text-yellow-400"></i>LunchCaptain
+            <i class="fas fa-utensils mr-2 text-yellow-400"></i>LunchCaptain <span class="text-xs bg-blue-700 px-2 py-0.5 rounded ml-2">v3.3</span>
         </h1>
         <div id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></div>
     </header>
@@ -166,40 +168,45 @@
                     <p class="text-sm text-gray-500" id="note-item-trans"></p>
                     <p class="text-blue-600 font-bold" id="note-item-price"></p>
                 </div>
+                
                 <div class="p-4 overflow-y-auto">
-                    <div id="options-container">
-                         <p class="text-xs font-bold text-gray-500 mb-2">辣度</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="option-tag" onclick="toggleOption(this)">微辣</span>
-                            <span class="option-tag" onclick="toggleOption(this)">中辣</span>
-                            <span class="option-tag" onclick="toggleOption(this)">大辣</span>
-                            <span class="option-tag" onclick="toggleOption(this)">不辣</span>
-                        </div>
-                        <p class="text-xs font-bold text-gray-500 mb-2">冰塊</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="option-tag" onclick="toggleOption(this)">正常冰</span>
-                            <span class="option-tag" onclick="toggleOption(this)">少冰</span>
-                            <span class="option-tag" onclick="toggleOption(this)">微冰</span>
-                            <span class="option-tag" onclick="toggleOption(this)">去冰</span>
-                        </div>
-                        <p class="text-xs font-bold text-gray-500 mb-2">甜度</p>
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <span class="option-tag" onclick="toggleOption(this)">正常糖</span>
-                            <span class="option-tag" onclick="toggleOption(this)">少糖</span>
-                            <span class="option-tag" onclick="toggleOption(this)">半糖</span>
-                            <span class="option-tag" onclick="toggleOption(this)">微糖</span>
-                            <span class="option-tag" onclick="toggleOption(this)">無糖</span>
-                        </div>
-                        <p class="text-xs font-bold text-gray-500 mb-2">其他</p>
-                        <div class="flex flex-wrap gap-2 mb-3">
-                            <span class="option-tag" onclick="toggleOption(this, true)">走蔥</span>
-                            <span class="option-tag" onclick="toggleOption(this, true)">走奶</span>
-                            <span class="option-tag" onclick="toggleOption(this, true)">走甜</span>
-                            <span class="option-tag" onclick="toggleOther(this)">其他...</span>
-                        </div>
+                    <p class="text-xs font-bold text-gray-500 mb-2">辣度</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="option-tag" onclick="toggleOption(this)">微辣</span>
+                        <span class="option-tag" onclick="toggleOption(this)">中辣</span>
+                        <span class="option-tag" onclick="toggleOption(this)">大辣</span>
+                        <span class="option-tag" onclick="toggleOption(this)">不辣</span>
                     </div>
+
+                    <p class="text-xs font-bold text-gray-500 mb-2">冰塊</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="option-tag" onclick="toggleOption(this)">正常冰</span>
+                        <span class="option-tag" onclick="toggleOption(this)">少冰</span>
+                        <span class="option-tag" onclick="toggleOption(this)">微冰</span>
+                        <span class="option-tag" onclick="toggleOption(this)">去冰</span>
+                        <span class="option-tag" onclick="toggleOption(this)">多冰</span>
+                    </div>
+
+                    <p class="text-xs font-bold text-gray-500 mb-2">甜度</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <span class="option-tag" onclick="toggleOption(this)">正常糖</span>
+                        <span class="option-tag" onclick="toggleOption(this)">少糖</span>
+                        <span class="option-tag" onclick="toggleOption(this)">半糖</span>
+                        <span class="option-tag" onclick="toggleOption(this)">微糖</span>
+                        <span class="option-tag" onclick="toggleOption(this)">無糖</span>
+                    </div>
+
+                    <p class="text-xs font-bold text-gray-500 mb-2">其他</p>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="option-tag" onclick="toggleOption(this, true)">走蔥</span>
+                        <span class="option-tag" onclick="toggleOption(this, true)">走奶</span>
+                        <span class="option-tag" onclick="toggleOption(this, true)">走甜</span>
+                        <span class="option-tag" onclick="toggleOther(this)">其他...</span>
+                    </div>
+                    
                     <input type="text" id="note-other-input" class="w-full p-2 border rounded text-sm hidden bg-gray-50" placeholder="請輸入其他需求...">
                 </div>
+
                 <div class="p-4 border-t bg-gray-50 flex gap-2">
                     <button onclick="closeNoteModal()" class="flex-1 btn bg-gray-200 text-gray-700 hover:bg-gray-300">取消</button>
                     <button onclick="confirmAddItem()" class="flex-1 btn btn-primary">加入訂單</button>
@@ -222,12 +229,8 @@
                     <span>TOTAL</span>
                     <span id="ticket-total" class="text-red-600"></span>
                 </div>
-                
-                <div class="flex flex-col items-center justify-center mb-2 min-h-[180px]">
+                <div class="flex justify-center mb-2">
                     <div id="orderQRCode"></div>
-                    <div id="qrErrorMsg" class="hidden text-red-500 text-xs text-center border p-2 rounded bg-red-50 mt-2">
-                        <i class="fas fa-exclamation-triangle mr-1"></i>資料量過大，請使用下方「複製代碼」
-                    </div>
                 </div>
                 <p class="text-[10px] text-center text-gray-400">請截圖或讓團長掃描</p>
             </div>
@@ -266,7 +269,7 @@
                 <h2 class="text-xl font-bold text-gray-800"><i class="fas fa-clipboard-list mr-2 text-blue-600"></i>訂單總結</h2>
                 <button onclick="document.getElementById('summary-panel').classList.add('hidden')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
             </div>
-            <div id="summary-content" class="flex-grow overflow-y-auto p-4 space-y-3 pb-40"></div>
+            <div id="summary-content" class="flex-grow overflow-y-auto p-4 space-y-3 pb-40 min-h-[50vh]"></div>
             <div class="bg-white p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] sticky bottom-0 z-10">
                 <div class="flex justify-between text-xl font-bold mb-3 border-b pb-2">
                     <span>總金額</span>
@@ -290,7 +293,7 @@
 
     <footer class="text-center text-gray-400 text-xs py-6 mt-auto footer-sign border-t bg-white">
         <p class="font-bold text-gray-500">LunchCaptain • 團長救星</p>
-        <p class="opacity-50 text-[10px]">V3.3 Smart ID Fix</p>
+        <p class="opacity-50 text-[10px]">V3.3 Bilingual Fixed</p>
     </footer>
 
     <script>
@@ -298,14 +301,12 @@
         let currentAI = 'gemini';
         let menuData = null;
         let myCart = []; 
-        let allOrders = {}; 
+        let allOrders = {}; // 全局變數
         let html5QrcodeScanner = null;
         let tempItem = null; 
         let userInfo = { name: '', phone: '' };
         
-        // --- V3.3 新增：ID 對照表 ---
-        let itemIdMap = {}; // { "A001": { n:..., p:..., t:... } }
-
+        // --- 1. 初始化 ---
         window.onload = function() {
             if(window.location.hash === "#import_menu") {
                 document.getElementById('setup-panel').scrollIntoView();
@@ -324,42 +325,6 @@
             }
         };
 
-        // --- V3.3 新增：自動為菜單生成短 ID (Smart ID) ---
-        function initIdSystem(data) {
-            // 每次載入菜單時，根據分類和順序生成固定 ID，確保團長和同事端一致
-            // 格式：A001, A002... (基於順序)
-            // 為了避免重複，我們重新遍歷 menuData 並分配 ID
-            let counter = 0;
-            itemIdMap = {}; // 重置
-
-            if(data && data.m) {
-                data.m.forEach(cat => {
-                    cat.i.forEach(item => {
-                        // 產生 4 位 ID (Base36ish) - 簡單點用 0001, 0002...
-                        // 使用 4 碼：AAAA ~ ZZZZ (為了更省空間，其實可以直接用 Array Index)
-                        // 但為了 User 要求 "款式編碼 4 位字母"，我們模擬一下
-                        const id = generateShortId(counter++);
-                        item.id = id; // 將 ID 寫入 menuData (暫存)
-                        itemIdMap[id] = item; // 建立索引，方便反查
-                    });
-                });
-            }
-        }
-
-        function generateShortId(num) {
-            // 簡單生成 AAAA, AAAB...
-            const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            let str = "";
-            let remaining = num;
-            for (let i = 0; i < 4; i++) {
-                str = charset[remaining % 26] + str;
-                remaining = Math.floor(remaining / 26);
-            }
-            return str;
-        }
-
-        // --- 模式初始化 ---
-
         function initCaptainMode() {
             document.getElementById('setup-panel').classList.remove('hidden');
             loadHistoryDropdown();
@@ -370,6 +335,7 @@
             document.getElementById('historySection').classList.toggle('hidden');
         }
 
+        // --- 2. AI Prompt ---
         function setAI(ai) {
             currentAI = ai;
             ['gemini','chatgpt','grok'].forEach(k => {
@@ -439,9 +405,6 @@ Rules:
                 menuData = JSON.parse(cleanJson);
                 if (!menuData.m) throw new Error("JSON 缺少 menu");
                 
-                // V3.3: 初始化 ID 系統
-                initIdSystem(menuData);
-
                 saveToHistory(menuData);
                 generateLinkAndShow();
             } catch (e) {
@@ -449,6 +412,7 @@ Rules:
             }
         }
 
+        // --- 歷史紀錄 ---
         function saveToHistory(data) {
             let history = JSON.parse(localStorage.getItem('lunch_captain_history') || "[]");
             history = history.filter(h => h.name !== data.r);
@@ -474,10 +438,6 @@ Rules:
             if(index === "") return;
             const history = JSON.parse(localStorage.getItem('lunch_captain_history') || "[]");
             menuData = history[index].data;
-            
-            // V3.3: 載入舊菜單也要初始化 ID
-            initIdSystem(menuData);
-            
             generateLinkAndShow();
         }
 
@@ -511,16 +471,11 @@ Rules:
             renderMenu();
         }
 
-        // --- 同事點餐 ---
-
+        // --- 3. 同事點餐 ---
         function initGuestMode(compressed) {
             try {
                 const jsonString = LZString.decompressFromEncodedURIComponent(compressed);
                 menuData = JSON.parse(jsonString);
-                
-                // V3.3: 同事端也要生成一樣的 ID
-                initIdSystem(menuData);
-
                 document.getElementById('roleBadge').textContent = "點餐模式";
                 document.getElementById('roleBadge').classList.remove('hidden');
                 document.getElementById('setup-panel').classList.add('hidden');
@@ -571,6 +526,7 @@ Rules:
             });
         }
 
+        // --- 備註 Modal ---
         function openNoteModal(item) {
             tempItem = item;
             document.getElementById('note-item-name').textContent = item.n;
@@ -617,8 +573,7 @@ Rules:
             if(otherText) notes.push(otherText);
 
             const noteString = notes.join(', ');
-            // V3.3: 購物車存入 ID (tempItem.id)，不存名字以縮減大小
-            myCart.push({ id: tempItem.id, n: tempItem.n, p: tempItem.p, o: noteString }); 
+            myCart.push({ n: tempItem.n, p: tempItem.p, o: noteString });
             
             updateCartBadge();
             closeNoteModal();
@@ -633,10 +588,13 @@ Rules:
             badge.classList.add('scale-100');
         }
 
+        // --- 4. 結算 (修復版) ---
         async function checkOut() {
             if (myCart.length === 0) return Swal.fire('購物車空的', '請先點餐', 'warning');
 
+            // 確保 userInfo 有值
             if (!userInfo.name || !userInfo.phone) {
+                // 如果沒有資料，彈出輸入框
                 const { value: formValues } = await Swal.fire({
                     title: '請輸入訂購人資料',
                     html:
@@ -657,9 +615,10 @@ Rules:
                     userInfo.phone = formValues[1];
                     localStorage.setItem('lunch_captain_user', JSON.stringify(userInfo));
                     updateUserDisplay();
-                    generateOrderTicket();
+                    generateOrderTicket(); // 資料填完後生成
                 }
             } else {
+                // 如果已有資料，直接生成
                 generateOrderTicket();
             }
         }
@@ -674,46 +633,38 @@ Rules:
             userInfo = { name: '', phone: '' };
             localStorage.removeItem('lunch_captain_user');
             document.getElementById('guestInfoDisplay').classList.add('hidden');
+            // Reset UI state to allow re-entry
             checkOut();
         }
 
-        // --- V3.3 修復：QR 生成邏輯 (使用 ID) ---
         function generateOrderTicket() {
-            let total = 0;
-            
-            // 畫面顯示用的 HTML (還是要顯示名字給同事看)
-            const itemsHtml = myCart.map(i => {
-                total += i.p;
-                const noteHtml = i.o ? `<span class="text-xs text-orange-500 block ml-2">└ ${i.o}</span>` : '';
-                return `<div class="border-b border-gray-100 pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>${noteHtml}</div>`;
-            }).join("");
-
-            // QR Code 專用資料 (只傳 ID 和備註，極度壓縮)
-            const compactItems = myCart.map(i => ({ i: i.id, o: i.o }));
-            const orderData = { n: userInfo.name, t: userInfo.phone, d: compactItems };
-            const orderString = JSON.stringify(orderData);
-
-            document.getElementById('ticket-store').textContent = menuData.r;
-            document.getElementById('ticket-name').textContent = userInfo.name;
-            document.getElementById('ticket-phone').textContent = userInfo.phone;
-            document.getElementById('ticket-items').innerHTML = itemsHtml;
-            document.getElementById('ticket-total').textContent = "$" + total;
-
-            // 產生 QR Code (加入 try catch 防止崩潰)
-            const qrContainer = document.getElementById('orderQRCode');
-            const errorMsg = document.getElementById('qrErrorMsg');
-            qrContainer.innerHTML = "";
-            errorMsg.classList.add('hidden');
-
             try {
-                new QRCode(qrContainer, { text: orderString, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.L });
+                let total = 0;
+                const itemsHtml = myCart.map(i => {
+                    total += i.p;
+                    const noteHtml = i.o ? `<span class="text-xs text-orange-500 block ml-2">└ ${i.o}</span>` : '';
+                    return `<div class="border-b border-gray-100 pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>${noteHtml}</div>`;
+                }).join("");
+
+                const orderData = { n: userInfo.name, t: userInfo.phone, d: myCart };
+                const orderString = JSON.stringify(orderData);
+
+                document.getElementById('ticket-store').textContent = menuData.r;
+                document.getElementById('ticket-name').textContent = userInfo.name;
+                document.getElementById('ticket-phone').textContent = userInfo.phone;
+                document.getElementById('ticket-items').innerHTML = itemsHtml;
+                document.getElementById('ticket-total').textContent = "$" + total;
+
+                const qrContainer = document.getElementById('orderQRCode');
+                qrContainer.innerHTML = "";
+                new QRCode(qrContainer, { text: orderString, width: 180, height: 180 });
+
+                document.getElementById('ticket-modal').dataset.orderString = orderString;
+                document.getElementById('ticket-modal').classList.remove('hidden');
             } catch (e) {
                 console.error(e);
-                errorMsg.classList.remove('hidden'); // 顯示錯誤提示
+                Swal.fire('錯誤', 'QR Code 生成失敗，請檢查名字是否包含特殊符號', 'error');
             }
-
-            document.getElementById('ticket-modal').dataset.orderString = orderString;
-            document.getElementById('ticket-modal').classList.remove('hidden');
         }
 
         function downloadTicket() {
@@ -754,28 +705,10 @@ Rules:
             document.getElementById('manualOrderInput').value = "";
         }
 
-        // --- V3.3 修復：掃描還原邏輯 (ID -> Name) ---
         function onScanSuccess(decodedText, result) {
             try {
                 const order = JSON.parse(decodedText);
                 if (!order.n || !order.d) throw new Error("格式錯誤");
-
-                // 反查 ID 補全資料 (Rehydration)
-                // 團長端的 menuData 必須和同事端一致 (因為是同一個 QR Link)
-                order.d.forEach(item => {
-                    // 如果 item 只有 id (i)，沒有 name (n)，就去查表
-                    if (item.i && !item.n) {
-                        const original = itemIdMap[item.i];
-                        if (original) {
-                            item.n = original.n;
-                            item.p = original.p;
-                            // 保留 original.t 如果需要翻譯
-                        } else {
-                            item.n = `(未知項目 ${item.i})`;
-                            item.p = 0;
-                        }
-                    }
-                });
 
                 if(html5QrcodeScanner) html5QrcodeScanner.pause();
                 const key = `${order.n}-${order.t}`;
@@ -800,10 +733,10 @@ Rules:
 
         function addOrderToSystem(key, order) {
             order.paid = false;
+            // 確保訂單物件完整性
+            if(!order.d) order.d = [];
             allOrders[key] = order;
             updateOrderBadge();
-            // 強制重繪 Summary 防止背景資料不同步
-            // showSummary(); // 這裡不需要call，因為是在 Modal 裡
         }
 
         function updateOrderBadge() {
@@ -813,10 +746,10 @@ Rules:
             badge.classList.toggle('hidden', count === 0);
         }
 
-        // --- 6. 結算輸出 (V3.3 修復：DOM 渲染問題) ---
+        // --- 6. 結算輸出 (修復顯示問題) ---
         function showSummary() {
             const container = document.getElementById('summary-content');
-            container.innerHTML = ""; // 清空舊內容
+            container.innerHTML = "";
             let grandTotal = 0;
             const keys = Object.keys(allOrders);
 
@@ -825,19 +758,19 @@ Rules:
             } else {
                 keys.forEach(key => {
                     const order = allOrders[key];
-                    // 計算小計 (確保 p 存在)
-                    const subtotal = order.d.reduce((sum, item) => sum + (item.p || 0), 0);
+                    // 再次檢查資料完整性
+                    if (!order || !order.d) return;
+
+                    const subtotal = order.d.reduce((sum, item) => sum + item.p, 0);
                     grandTotal += subtotal;
 
-                    // 產生項目列表
                     const itemsHtml = order.d.map(i => 
                         `<div class='flex justify-between text-sm text-gray-600 pl-2 border-l-2 border-gray-200'>
-                            <span>${i.n || '未知品項'} ${i.o ? `<span class='text-xs text-orange-500'>(${i.o})</span>` : ''}</span>
-                            <span>$${i.p || 0}</span>
+                            <span>${i.n} ${i.o ? `<span class='text-xs text-orange-500'>(${i.o})</span>` : ''}</span>
+                            <span>$${i.p}</span>
                         </div>`
                     ).join("");
 
-                    // 直接使用 innerHTML 插入字串，避免 DOM 操作錯誤
                     const div = document.createElement('div');
                     div.className = `p-3 rounded border-2 transition-all ${order.paid ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`;
                     div.innerHTML = `
@@ -869,10 +802,10 @@ Rules:
             let total = 0;
             Object.values(allOrders).forEach(order => {
                 order.d.forEach(item => {
-                    const k = (item.n || 'Unknown') + (item.o ? ` (${item.o})` : '');
-                    if (!itemSummary[k]) itemSummary[k] = { count: 0, price: item.p || 0 };
+                    const k = item.n + (item.o ? ` (${item.o})` : '');
+                    if (!itemSummary[k]) itemSummary[k] = { count: 0, price: item.p };
                     itemSummary[k].count++;
-                    total += (item.p || 0);
+                    total += item.p;
                 });
             });
 
@@ -889,9 +822,9 @@ Rules:
             let total = 0;
             let paidCount = 0;
             Object.values(allOrders).forEach(order => {
-                total += order.d.reduce((s, i) => s + (i.p||0), 0);
+                total += order.d.reduce((s, i) => s + i.p, 0);
                 if(order.paid) paidCount++;
-                text += `${order.paid ? '✅' : '⬜'} ${order.n}: $${order.d.reduce((s,i)=>s+(i.p||0),0)}\n`;
+                text += `${order.paid ? '✅' : '⬜'} ${order.n}: $${order.d.reduce((s,i)=>s+i.p,0)}\n`;
             });
             text += `━━━━━━━━━━━━\n💰 總計: $${total}\n(已付: ${paidCount} / 未付: ${Object.keys(allOrders).length - paidCount})`;
             navigator.clipboard.writeText(text).then(() => Swal.fire('已複製', '可貼到群組', 'success'));
