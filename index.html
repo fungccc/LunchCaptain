@@ -3,86 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LunchCaptain - 團長救星 V4.0</title>
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <link href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)" rel="stylesheet">
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js](https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js)"></script>
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js](https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js)"></script>
-    <script src="[https://unpkg.com/html5-qrcode](https://unpkg.com/html5-qrcode)" type="text/javascript"></script>
-    <script src="[https://html2canvas.hertzen.com/dist/html2canvas.min.js](https://html2canvas.hertzen.com/dist/html2canvas.min.js)"></script>
-    <script src="[https://cdn.jsdelivr.net/npm/sweetalert2@11](https://cdn.jsdelivr.net/npm/sweetalert2@11)"></script>
+    <title>LunchCaptain - 團長救星 V3.1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f3f4f6; }
-        .btn { @apply font-bold py-2 px-4 rounded transition duration-200 shadow-sm flex items-center justify-center; }
+        body { font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif; background-color: #f8fafc; }
+        .btn { @apply font-bold py-2 px-4 rounded-lg transition duration-200 shadow-sm flex items-center justify-center; }
         .btn-primary { @apply bg-blue-600 text-white hover:bg-blue-700; }
-        .btn-success { @apply bg-green-500 text-white hover:bg-green-600; }
+        .btn-dark { @apply bg-gray-800 text-white hover:bg-gray-900; }
+        .btn-success { @apply bg-green-600 text-white hover:bg-green-700; }
         .btn-action { @apply bg-indigo-500 text-white hover:bg-indigo-600; }
         .btn-warning { @apply bg-orange-500 text-white hover:bg-orange-600; }
-        .card { @apply bg-white rounded-lg shadow-md p-4 mb-4; }
+        .card { @apply bg-white rounded-xl shadow-lg p-5 mb-4 border border-gray-100; }
         .footer-sign { font-family: 'Courier New', monospace; letter-spacing: 1px; }
         
-        /* 標籤選取樣式 */
-        .tag-checkbox:checked + div { @apply bg-blue-600 text-white border-blue-600; }
+        /* 備註選項樣式 */
+        .option-tag { @apply border border-gray-300 rounded px-3 py-1 text-sm cursor-pointer hover:bg-blue-50 transition select-none; }
+        .option-tag.active { @apply bg-blue-600 text-white border-blue-600; }
     </style>
 </head>
-<body class="pb-28 flex flex-col min-h-screen">
+<body class="pb-32 flex flex-col min-h-screen">
 
-    <header class="bg-gradient-to-r from-slate-800 to-blue-900 text-white p-4 shadow-lg sticky top-0 z-50 flex justify-between items-center">
-        <h1 class="text-lg font-bold tracking-wider cursor-pointer" onclick="location.href=location.pathname.split('?')[0]">
-            <i class="fas fa-rocket mr-2 text-yellow-400"></i>LunchCaptain
+    <header class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50 flex justify-between items-center">
+        <h1 class="text-lg font-bold tracking-wider cursor-pointer flex items-center" onclick="location.href=location.pathname.split('#')[0]">
+            <i class="fas fa-utensils mr-2 text-yellow-400"></i>LunchCaptain
         </h1>
-        <span id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></span>
+        <div id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></div>
     </header>
 
     <div class="max-w-md mx-auto p-4 flex-grow w-full relative">
 
-        <div id="setup-panel" class="card border-l-4 border-blue-500 scroll-mt-20">
-            <h2 class="text-lg font-bold mb-3 text-gray-800 flex justify-between items-center">
-                <span><i class="fas fa-user-tie mr-2"></i>團長控制台</span>
-                <button onclick="clearHistory()" class="text-xs text-gray-400 font-normal hover:text-red-500">清除紀錄</button>
-            </h2>
+        <div id="setup-panel" class="card border-t-4 border-blue-600">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800"><i class="fas fa-robot mr-2 text-blue-600"></i>AI 菜單掃描</h2>
+                <button onclick="toggleHistory()" class="text-sm text-gray-500 hover:text-blue-600 underline">歷史紀錄</button>
+            </div>
 
-            <div id="historySection" class="mb-4 hidden">
+            <div id="historySection" class="mb-4 hidden bg-gray-50 p-3 rounded">
                 <label class="text-xs text-gray-500 block mb-1">快速載入舊菜單：</label>
-                <select id="historySelect" onchange="loadFromHistory(this.value)" class="w-full p-2 border rounded bg-gray-50 text-sm">
-                    <option value="">-- 請選擇歷史餐廳 --</option>
+                <select id="historySelect" onchange="loadFromHistory(this.value)" class="w-full p-2 border rounded text-sm mb-2">
+                    <option value="">-- 選擇餐廳 --</option>
                 </select>
+                <button onclick="clearHistory()" class="text-xs text-red-400 w-full text-right">清除紀錄</button>
             </div>
 
-            <div class="bg-blue-50 p-3 rounded mb-3 border border-blue-100">
-                <p class="text-xs text-blue-800 font-bold mb-2">🚀 新開團步驟：</p>
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <button onclick="copyPrompt()" class="btn btn-action text-xs">
-                        <i class="fas fa-copy mr-1"></i> 1. 複製 AI 指令
-                    </button>
-                    <button onclick="openAI()" class="btn bg-gradient-to-r from-blue-400 to-indigo-500 text-white text-xs">
-                        <i class="fas fa-robot mr-1"></i> 2. 開啟 AI
-                    </button>
-                </div>
-                <p class="text-[10px] text-gray-500 leading-tight">
-                    * AI 分析完後，點擊它提供的連結跳回這裡，然後貼上 JSON。
-                </p>
+            <div class="bg-blue-50 p-3 rounded-lg mb-4 text-sm text-blue-800 border border-blue-100">
+                <p class="font-bold mb-2">🚀 操作步驟：</p>
+                <ol class="list-decimal list-inside space-y-1 text-xs">
+                    <li>選擇下方 AI 平台</li>
+                    <li>點擊「複製指令並前往」</li>
+                    <li>貼上指令並上傳菜單圖片</li>
+                    <li>點擊 AI 回傳的「返回連結」或複製 JSON</li>
+                </ol>
+            </div>
+
+            <p class="text-xs text-gray-500 font-bold mb-2">1. 選擇 AI 平台：</p>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+                <button onclick="setAI('gemini')" id="btn-gemini" class="btn btn-primary text-xs flex-col py-3 ring-2 ring-offset-1 ring-blue-600">
+                    <i class="fas fa-star mb-1"></i>Gemini
+                </button>
+                <button onclick="setAI('chatgpt')" id="btn-chatgpt" class="btn btn-success text-xs flex-col py-3 opacity-60 hover:opacity-100">
+                    <i class="fas fa-bolt mb-1"></i>ChatGPT
+                </button>
+                <button onclick="setAI('grok')" id="btn-grok" class="btn btn-dark text-xs flex-col py-3 opacity-60 hover:opacity-100">
+                    <i class="fas fa-rocket mb-1"></i>Grok
+                </button>
+            </div>
+
+            <button onclick="copyPromptAndOpenAI()" class="w-full btn btn-action mb-4 shadow-md text-sm py-3">
+                <i class="fas fa-copy mr-2"></i> 2. 複製指令並前往 App
+            </button>
+
+            <div class="relative group">
+                <label class="text-xs text-gray-500 font-bold mb-1 block">3. 貼上 AI 回傳的 JSON：</label>
+                <textarea id="jsonInput" rows="3" class="w-full p-3 border-2 border-dashed border-gray-300 rounded-lg text-xs focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="在此貼上 (或點擊 AI 提供的返回連結自動帶入)..."></textarea>
+                <button onclick="pasteFromClipboard()" class="absolute top-7 right-2 bg-gray-100 p-1 rounded hover:bg-gray-200 text-gray-600 text-xs shadow-sm border">
+                    <i class="fas fa-paste"></i> 貼上
+                </button>
             </div>
             
-            <textarea id="jsonInput" rows="3" class="w-full p-2 border-2 border-dashed border-gray-300 rounded text-xs text-gray-600 mb-2 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition" placeholder="3. 在此貼上 AI 產出的 JSON (例如: {&quot;r&quot;:...})"></textarea>
-            
-            <button onclick="parseMenuAndGenerateLink()" class="w-full btn btn-primary">
-                <i class="fas fa-qrcode mr-1"></i> 4. 生成「菜單 QR」
+            <button onclick="parseMenuAndGenerateLink()" class="w-full btn btn-primary mt-3">
+                <i class="fas fa-magic mr-2"></i> 4. 解析並生成點餐 QR
             </button>
         </div>
 
         <div id="share-panel" class="card hidden text-center">
             <h2 class="text-lg font-bold mb-1 text-blue-800" id="shareTitle"></h2>
             <p class="text-xs text-gray-500 mb-4">請同事掃描此 QR Code 點餐</p>
-            <div id="menuQRCode" class="flex justify-center mb-4 p-2 bg-white rounded inline-block shadow-inner"></div>
+            <div id="menuQRCode" class="flex justify-center mb-4 p-2 bg-white rounded inline-block shadow-inner border"></div>
             <button onclick="enterCaptainMode()" class="btn btn-warning w-full animate-pulse">
-                <i class="fas fa-clipboard-check mr-2"></i>我分享好了，進入收單模式
+                <i class="fas fa-user-tie mr-2"></i>開始收單 (團長模式)
             </button>
         </div>
 
         <div id="order-panel" class="hidden">
-            <div class="mb-4 sticky top-16 z-30 bg-[#f3f4f6] pb-2 pt-1">
+            <div class="mb-4 sticky top-16 z-30 bg-[#f8fafc] pb-2 pt-1">
                 <h2 id="storeName" class="text-2xl font-bold text-gray-800 text-center mb-2"></h2>
                 
                 <div id="guestInfoInput" class="hidden p-3 bg-white rounded-lg shadow-sm border border-blue-100">
@@ -113,57 +134,82 @@
             <button onclick="startScanner()" class="bg-blue-600 text-white w-14 h-14 rounded-full shadow-2xl hover:bg-blue-700 flex items-center justify-center border-2 border-white transition transform hover:scale-110">
                 <i class="fas fa-camera text-xl"></i>
             </button>
-            <button onclick="showSummary()" class="bg-gray-800 text-white w-14 h-14 rounded-full shadow-2xl hover:bg-black flex items-center justify-center border-2 border-white transition transform hover:scale-110 relative">
+            <button onclick="showSummary()" class="bg-slate-800 text-white w-14 h-14 rounded-full shadow-2xl hover:bg-slate-900 flex items-center justify-center border-2 border-white transition transform hover:scale-110 relative">
                 <i class="fas fa-receipt text-xl"></i>
                 <span id="orderCountBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
             </button>
         </div>
 
         <div id="note-modal" class="fixed inset-0 bg-black bg-opacity-50 z-[70] hidden flex items-center justify-center px-4">
-            <div class="bg-white rounded-xl p-4 w-full max-w-sm shadow-2xl transform transition-all scale-100 max-h-[90vh] overflow-y-auto">
-                <div class="text-center mb-3 border-b pb-2">
+            <div class="bg-white rounded-xl w-full max-w-sm shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+                <div class="p-4 border-b bg-gray-50">
                     <h3 class="font-bold text-lg" id="note-item-name"></h3>
                     <p class="text-blue-600 font-bold" id="note-item-price"></p>
                 </div>
-
-                <p class="text-xs text-gray-500 mb-2 font-bold">客製化選項 (可多選)：</p>
-                <div class="grid grid-cols-3 gap-2 mb-4" id="note-tags-container">
+                
+                <div class="p-4 overflow-y-auto">
+                    <p class="text-xs font-bold text-gray-500 mb-2">辣度</p>
+                    <div class="flex flex-wrap gap-2 mb-4" id="opt-spicy">
+                        <span class="option-tag" onclick="toggleOption(this, 'spicy')">微辣</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'spicy')">中辣</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'spicy')">大辣</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'spicy')">不辣</span>
                     </div>
 
-                <div class="mb-4">
-                     <label class="flex items-center space-x-2 text-sm text-gray-700 mb-1">
-                        <input type="checkbox" id="note-other-check" class="w-4 h-4" onchange="toggleOtherInput()">
-                        <span>其他/手寫備註</span>
-                    </label>
-                    <input type="text" id="note-input" placeholder="例如：幫我切開..." class="w-full p-2 border rounded bg-gray-50 text-sm hidden">
+                    <p class="text-xs font-bold text-gray-500 mb-2">冰塊</p>
+                    <div class="flex flex-wrap gap-2 mb-4" id="opt-ice">
+                        <span class="option-tag" onclick="toggleOption(this, 'ice')">正常冰</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'ice')">少冰</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'ice')">微冰</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'ice')">去冰</span>
+                    </div>
+
+                    <p class="text-xs font-bold text-gray-500 mb-2">甜度</p>
+                    <div class="flex flex-wrap gap-2 mb-4" id="opt-sugar">
+                        <span class="option-tag" onclick="toggleOption(this, 'sugar')">正常糖</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'sugar')">少糖</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'sugar')">半糖</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'sugar')">微糖</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'sugar')">無糖</span>
+                    </div>
+
+                    <p class="text-xs font-bold text-gray-500 mb-2">其他</p>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        <span class="option-tag" onclick="toggleOption(this, 'misc')">走蔥</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'misc')">走奶</span>
+                        <span class="option-tag" onclick="toggleOption(this, 'misc')">加飯</span>
+                        <span class="option-tag" onclick="toggleOther(this)">其他...</span>
+                    </div>
+                    
+                    <input type="text" id="note-other-input" class="w-full p-2 border rounded text-sm hidden bg-gray-50" placeholder="請輸入其他需求...">
                 </div>
 
-                <div class="flex gap-2 mt-4">
+                <div class="p-4 border-t bg-gray-50 flex gap-2">
                     <button onclick="closeNoteModal()" class="flex-1 btn bg-gray-200 text-gray-700 hover:bg-gray-300">取消</button>
                     <button onclick="confirmAddItem()" class="flex-1 btn btn-primary">加入訂單</button>
                 </div>
             </div>
         </div>
 
-        <div id="ticket-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[80] hidden flex flex-col items-center justify-center p-4 overflow-y-auto">
-            <div class="bg-white rounded-lg p-5 w-full max-w-sm mb-4 relative" id="ticket-content">
-                <div class="text-center border-b border-dashed border-gray-300 pb-3 mb-3">
+        <div id="ticket-modal" class="fixed inset-0 bg-black bg-opacity-95 z-[80] hidden flex flex-col items-center justify-center p-4">
+            <div class="bg-white rounded-lg p-5 w-full max-w-sm mb-4 relative shadow-2xl" id="ticket-content">
+                <div class="text-center border-b-2 border-dashed border-gray-300 pb-3 mb-3">
                     <h3 class="font-bold text-xl text-gray-800" id="ticket-store"></h3>
-                    <p class="text-xs text-gray-400 mt-1 uppercase tracking-widest">ORDER TICKET</p>
+                    <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-[0.2em]">ORDER TICKET</p>
                 </div>
-                <div class="flex justify-between text-base mb-3 bg-gray-50 p-2 rounded">
-                    <span class="font-bold text-gray-700"><i class="fas fa-user mr-1"></i><span id="ticket-name"></span></span>
-                    <span class="font-bold text-gray-500"><i class="fas fa-phone mr-1"></i><span id="ticket-phone"></span></span>
+                <div class="flex justify-between text-base mb-3 bg-gray-50 p-2 rounded border border-gray-100">
+                    <span class="font-bold text-gray-700"><i class="fas fa-user mr-1 text-gray-400"></i><span id="ticket-name"></span></span>
+                    <span class="font-bold text-gray-500"><i class="fas fa-phone mr-1 text-gray-400"></i><span id="ticket-phone"></span></span>
                 </div>
-                <div id="ticket-items" class="text-sm space-y-2 mb-4"></div>
-                <div class="flex justify-between font-bold text-xl border-t border-gray-800 pt-3 mb-4">
+                <div id="ticket-items" class="text-sm space-y-2 mb-4 max-h-40 overflow-y-auto"></div>
+                <div class="flex justify-between font-bold text-xl border-t-2 border-gray-800 pt-3 mb-4">
                     <span>TOTAL</span>
                     <span id="ticket-total" class="text-red-600"></span>
                 </div>
                 <div class="flex justify-center mb-2">
                     <div id="orderQRCode"></div>
                 </div>
-                <p class="text-[10px] text-center text-gray-400">請讓團長掃描，或複製下方代碼</p>
+                <p class="text-[10px] text-center text-gray-400">請截圖或讓團長掃描</p>
             </div>
             
             <div class="grid grid-cols-2 gap-2 w-full max-w-sm mb-2">
@@ -174,22 +220,22 @@
                     <i class="fas fa-copy mr-1"></i> 複製代碼
                 </button>
             </div>
-            <button onclick="document.getElementById('ticket-modal').classList.add('hidden')" class="text-white underline text-sm mt-2">關閉視窗</button>
+            <button onclick="document.getElementById('ticket-modal').classList.add('hidden')" class="text-white underline text-sm mt-4">關閉視窗</button>
         </div>
 
         <div id="scanner-modal" class="fixed inset-0 bg-black z-[80] hidden flex flex-col">
             <div class="flex justify-between items-center p-4 bg-black text-white">
-                <h3 class="font-bold"><i class="fas fa-camera mr-2"></i>掃描訂單</h3>
-                <button onclick="stopScanner()" class="text-2xl"><i class="fas fa-times"></i></button>
+                <h3 class="font-bold text-lg"><i class="fas fa-camera mr-2"></i>掃描訂單</h3>
+                <button onclick="stopScanner()" class="text-2xl opacity-80 hover:opacity-100"><i class="fas fa-times"></i></button>
             </div>
             <div class="flex-grow flex flex-col justify-center bg-black relative">
-                <div id="reader" class="w-full h-64 bg-gray-900"></div>
-                <p class="text-gray-400 text-center text-sm mt-4">對準同事的 QR Code</p>
+                <div id="reader" class="w-full h-64 bg-gray-900 border-y-2 border-blue-500"></div>
+                <p class="text-gray-400 text-center text-sm mt-4 animate-pulse">請對準同事的 QR Code</p>
                 
-                <div class="absolute bottom-0 w-full bg-gray-900 p-4 rounded-t-2xl">
-                    <p class="text-xs text-gray-400 mb-2 text-center">掃不到？請同事「複製代碼」並貼在下方：</p>
+                <div class="absolute bottom-0 w-full bg-gray-900 p-6 rounded-t-3xl border-t border-gray-700">
+                    <p class="text-xs text-gray-400 mb-2 text-center">或貼上訂單代碼：</p>
                     <div class="flex gap-2">
-                        <input type="text" id="manualOrderInput" class="flex-1 bg-gray-800 text-white border border-gray-700 rounded p-2 text-sm" placeholder="貼上訂單代碼...">
+                        <input type="text" id="manualOrderInput" class="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg p-3 text-sm focus:border-blue-500 focus:outline-none" placeholder="在此貼上代碼...">
                         <button onclick="manualImportOrder()" class="btn btn-action whitespace-nowrap"><i class="fas fa-file-import"></i></button>
                     </div>
                 </div>
@@ -202,53 +248,59 @@
                 <button onclick="document.getElementById('summary-panel').classList.add('hidden')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-xl"></i></button>
             </div>
             
-            <div id="summary-content" class="flex-grow overflow-y-auto p-4 space-y-3 pb-32"></div>
+            <div id="summary-content" class="flex-grow overflow-y-auto p-4 space-y-3 pb-40"></div>
             
             <div class="bg-white p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] sticky bottom-0 z-10">
                 <div class="flex justify-between text-xl font-bold mb-3 border-b pb-2">
                     <span>總金額</span>
                     <span id="grand-total" class="text-red-600">$0</span>
                 </div>
+                
                 <div class="grid grid-cols-2 gap-2 mb-2">
-                    <button onclick="copyForRestaurant()" class="btn btn-primary text-xs"><i class="fab fa-whatsapp mr-1"></i> 給餐廳</button>
-                    <button onclick="copyForGroup()" class="btn btn-action text-xs"><i class="fas fa-users mr-1"></i> 給群組</button>
+                    <button onclick="copyForRestaurant()" class="btn btn-primary text-xs">
+                        <i class="fab fa-whatsapp mr-1"></i> 給餐廳 (WhatsApp)
+                    </button>
+                    <button onclick="copyForGroup()" class="btn btn-action text-xs">
+                        <i class="fas fa-users mr-1"></i> 給群組 (Line)
+                    </button>
                 </div>
-                <button onclick="pickRandomVictim()" class="w-full btn btn-warning text-xs"><i class="fas fa-dice mr-1"></i> 誰去拿外賣？</button>
+                <button onclick="pickRandomVictim()" class="w-full btn btn-warning text-xs">
+                    <i class="fas fa-dice mr-1"></i> 誰去拿外賣？(隨機)
+                </button>
             </div>
         </div>
 
     </div>
 
-    <footer class="text-center text-gray-400 text-xs py-4 mt-auto footer-sign bg-gray-100 border-t">
-        <p class="font-bold text-gray-500">豐狂出品 • 團長救星</p>
-        <p class="opacity-50 text-[10px]">LunchCaptain V4.0</p>
+    <footer class="text-center text-gray-400 text-xs py-6 mt-auto footer-sign border-t bg-white">
+        <p class="font-bold text-gray-500">LunchCaptain • 團長救星</p>
+        <p class="opacity-50 text-[10px]">V3.1 AI Powered</p>
     </footer>
 
     <script>
-        // --- 核心變數 ---
+        // --- 核心狀態 ---
+        let currentAI = 'gemini'; // 預設 AI
         let menuData = null;
         let myCart = []; 
-        let allOrders = {};
+        let allOrders = {}; 
         let html5QrcodeScanner = null;
-        let tempItem = null;
+        let tempItem = null; 
         
-        // 客製化選項清單
-        const NOTE_OPTIONS = ['少辣', '中辣', '大辣', '走蔥', '少冰', '多冰', '走冰', '少甜', '半糖', '走甜', '走奶'];
-
-        // --- 1. 初始化與路由 ---
+        // --- 1. 初始化與 Return Hook 偵測 ---
         window.onload = function() {
-            // 檢查是否是 AI 帶回來的 #captain_import 狀態
-            if (window.location.hash === '#captain_import') {
-                history.replaceState(null, null, ' '); // 清除 hash 保持網址乾淨
-                document.getElementById('setup-panel').classList.remove('hidden');
+            // 偵測是否為 AI 跳轉回來的
+            if(window.location.hash === "#import_menu") {
+                document.getElementById('setup-panel').scrollIntoView();
                 document.getElementById('jsonInput').focus();
-                // 視覺提示
+                // 清除 hash 避免重整時又觸發
+                history.replaceState(null, null, ' ');
                 Swal.fire({
-                    toast: true, position: 'top', icon: 'info', 
-                    title: '歡迎回來，請貼上 JSON', timer: 2000, showConfirmButton: false
+                    icon: 'info',
+                    title: '歡迎回來',
+                    text: '請將 AI 產生的 JSON 貼上',
+                    timer: 2000,
+                    showConfirmButton: false
                 });
-                loadHistoryDropdown();
-                return;
             }
 
             const params = new URLSearchParams(window.location.search);
@@ -264,82 +316,144 @@
         function initCaptainMode() {
             document.getElementById('setup-panel').classList.remove('hidden');
             loadHistoryDropdown();
+            // 預設選中 Gemini 樣式
+            setAI('gemini');
         }
 
-        // --- 2. AI 指令與解析 (更新 Prompt 邏輯) ---
-        function copyPrompt() {
-            // 動態生成回傳連結 (去除 query params 和 hash)
-            const returnUrl = window.location.href.split('?')[0].split('#')[0] + '#captain_import';
-            
-            const prompt = `請扮演菜單資料分析師。我會上傳一張菜單圖片，請分析內容並嚴格遵守以下規則：
-1. 輸出純 JSON 格式，不要包含 Markdown 標記 (如 \`\`\`json)。
-2. JSON 結構：{"r":"店名", "m":[{"c":"分類", "i":[{"n":"菜名", "p":價格數字}]}]}。
-3. 如果有大小份，請拆分為不同項目。
-4. 價格只要純數字。
-5. 【重要】JSON 輸出結束後，請務必換行並附上這個 Markdown 連結：
-[↩️ 點擊這裡返回系統匯入](${returnUrl})
-6. 請分析接下來的圖片。`;
+        function toggleHistory() {
+            const el = document.getElementById('historySection');
+            el.classList.toggle('hidden');
+        }
 
-            navigator.clipboard.writeText(prompt).then(() => {
+        // --- 2. AI 指令與解析邏輯 (更新) ---
+        
+        function setAI(ai) {
+            currentAI = ai;
+            // 重置按鈕樣式
+            ['gemini','chatgpt','grok'].forEach(k => {
+                document.getElementById(`btn-${k}`).classList.remove('ring-2', 'ring-offset-1', 'ring-blue-600', 'opacity-100');
+                document.getElementById(`btn-${k}`).classList.add('opacity-60');
+            });
+            // 設置選中樣式
+            document.getElementById(`btn-${currentAI}`).classList.remove('opacity-60');
+            document.getElementById(`btn-${currentAI}`).classList.add('ring-2', 'ring-offset-1', 'ring-blue-600', 'opacity-100');
+        }
+
+        function copyPromptAndOpenAI() {
+            // 建構 Return Link
+            const returnUrl = window.location.href.split('#')[0].split('?')[0] + "#import_menu";
+            
+            // 核心 Prompt 邏輯
+            let promptText = `Role: Professional Menu Data Analyst.
+Task: Analyze the uploaded menu image.
+Output Format: Strict JSON ONLY. No markdown code blocks, no intro/outro text.
+JSON Structure: {"r":"Restaurant Name","m":[{"c":"Category Name","i":[{"n":"Item Name","p":Price_Number}]}]}
+Rules:
+1. "p" (Price) must be a number.
+2. If size options exist, create separate items (e.g. "Tea(L)", "Tea(M)").
+3. AFTER the JSON, append a new line with this exact Markdown link: [↩️ Click here to Import Menu](${returnUrl})`;
+
+            // 針對 Grok 的特殊處理 (因為 Grok App 內置瀏覽器行為不一)
+            if(currentAI === 'grok') {
+                promptText += `\n\n(Note for User: If using Grok App, please manually switch back to browser to paste)`;
+            }
+
+            navigator.clipboard.writeText(promptText).then(() => {
+                let url = "https://gemini.google.com/";
+                if(currentAI === 'chatgpt') url = "https://chat.openai.com/";
+                if(currentAI === 'grok') url = "https://x.com/i/grok";
+
                 Swal.fire({
                     icon: 'success',
-                    title: '指令已複製！',
-                    html: '請前往 AI App 貼上指令並上傳菜單。<br><br><b>完成後點擊 AI 回覆中的「返回連結」跳回這裡。</b>',
-                    confirmButtonText: '我知道了'
+                    title: '指令已複製',
+                    text: '即將開啟 AI 平台，請貼上指令並上傳圖片。',
+                    timer: 1500,
+                    showConfirmButton: false
+                }).then(() => {
+                    window.open(url, '_blank');
                 });
             });
         }
 
-        function openAI() { window.open("[https://gemini.google.com/](https://gemini.google.com/)", '_blank'); }
+        async function pasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('jsonInput').value = text;
+            } catch (err) {
+                Swal.fire('無法自動貼上', '請手動點擊輸入框貼上', 'warning');
+            }
+        }
 
         function parseMenuAndGenerateLink() {
-            let raw = document.getElementById('jsonInput').value.trim();
-            
-            if (!raw) return Swal.fire('請先貼上資料', '輸入框是空的喔', 'warning');
+            const raw = document.getElementById('jsonInput').value;
+            if(!raw) return Swal.fire('錯誤', '請先貼上 JSON', 'error');
 
-            // 1. 清洗資料：移除 Markdown 代碼塊標記
-            raw = raw.replace(/```json/g, "").replace(/```/g, "").trim();
-
-            // 2. 嘗試解析
             try {
-                // 如果開頭不是 {，嘗試尋找第一個 {
-                const firstBrace = raw.indexOf('{');
-                const lastBrace = raw.lastIndexOf('}');
-                if (firstBrace !== -1 && lastBrace !== -1) {
-                    raw = raw.substring(firstBrace, lastBrace + 1);
-                }
-
-                menuData = JSON.parse(raw);
+                // 字串清洗：取出第一個 { 和最後一個 } 之間的內容
+                const jsonMatch = raw.match(/\{[\s\S]*\}/);
+                if (!jsonMatch) throw new Error("找不到有效的 JSON 物件");
                 
-                // 3. 驗證結構
-                if (!menuData.m || !Array.isArray(menuData.m)) {
-                    throw new Error("JSON 格式正確但缺少 'm' (menu) 陣列，請確認 AI 輸出是否完整。");
-                }
-
+                const cleanJson = jsonMatch[0];
+                menuData = JSON.parse(cleanJson);
+                
+                if (!menuData.m) throw new Error("JSON 結構錯誤 (缺少 menu 'm' 欄位)");
+                
+                // 成功解析，存入歷史並生成
                 saveToHistory(menuData);
-                generateLinkAndShow(true);
+                generateLinkAndShow();
 
             } catch (e) {
                 console.error(e);
-                // 判斷是否是常見錯誤
-                let msg = "請確認你貼上的是 AI 輸出的 JSON 文字。";
-                if (raw.includes("http")) msg = "你似乎貼到了網址？請貼上 JSON 內容。";
-                
                 Swal.fire({
                     icon: 'error',
                     title: '解析失敗',
-                    text: `錯誤原因: ${e.message}\n${msg}`
+                    text: '無法辨識 JSON，請確認 AI 回傳格式正確。\n錯誤訊息: ' + e.message,
+                    footer: '<a href="#" onclick="copyPromptAndOpenAI()">重新複製指令再試一次</a>'
                 });
             }
         }
 
-        function generateLinkAndShow(save) {
+        // --- 歷史紀錄 (LocalStorage) ---
+        function saveToHistory(data) {
+            let history = JSON.parse(localStorage.getItem('lunch_captain_history') || "[]");
+            history = history.filter(h => h.name !== data.r);
+            history.unshift({ name: data.r, data: data, time: Date.now() });
+            if(history.length > 5) history.pop();
+            localStorage.setItem('lunch_captain_history', JSON.stringify(history));
+            loadHistoryDropdown();
+        }
+
+        function loadHistoryDropdown() {
+            const history = JSON.parse(localStorage.getItem('lunch_captain_history') || "[]");
+            const select = document.getElementById('historySelect');
+            if(history.length > 0) {
+                document.getElementById('historySection').classList.remove('hidden');
+                select.innerHTML = '<option value="">-- 選擇餐廳 --</option>';
+                history.forEach((h, index) => {
+                    select.innerHTML += `<option value="${index}">${h.name} (${new Date(h.time).toLocaleDateString()})</option>`;
+                });
+            }
+        }
+
+        function loadFromHistory(index) {
+            if(index === "") return;
+            const history = JSON.parse(localStorage.getItem('lunch_captain_history') || "[]");
+            menuData = history[index].data;
+            generateLinkAndShow();
+        }
+
+        function clearHistory() {
+            if(confirm('確定清除紀錄？')) {
+                localStorage.removeItem('lunch_captain_history');
+                location.reload();
+            }
+        }
+
+        function generateLinkAndShow() {
             const jsonString = JSON.stringify(menuData);
             const compressed = LZString.compressToEncodedURIComponent(jsonString);
             const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressed}`;
             
-            if(shareUrl.length > 2000) Swal.fire({icon:'warning', title:'菜單資料量較大', text:'QR Code 可能會較密集'});
-
             document.getElementById('shareTitle').textContent = menuData.r;
             const qrContainer = document.getElementById('menuQRCode');
             qrContainer.innerHTML = "";
@@ -358,14 +472,11 @@
             renderMenu();
         }
 
-        // --- 3. 點餐介面 (含客製化勾選) ---
-
+        // --- 3. 同事點餐 & 新版備註 ---
         function initGuestMode(compressed) {
             try {
                 const jsonString = LZString.decompressFromEncodedURIComponent(compressed);
-                if(!jsonString) throw new Error("Decompression failed");
                 menuData = JSON.parse(jsonString);
-                
                 document.getElementById('roleBadge').textContent = "點餐模式";
                 document.getElementById('roleBadge').classList.remove('hidden');
                 document.getElementById('setup-panel').classList.add('hidden');
@@ -374,8 +485,7 @@
                 document.getElementById('guest-fab').classList.remove('hidden');
                 renderMenu();
             } catch (e) {
-                Swal.fire({icon:'error', title:'連結無效', text:'無法讀取菜單，請請團長重新分享'});
-                setTimeout(() => location.href = location.pathname.split('?')[0], 2000);
+                Swal.fire('錯誤', '無效的菜單連結', 'error').then(() => location.href = location.pathname.split('?')[0]);
             }
         }
 
@@ -387,12 +497,12 @@
             menuData.m.forEach(cat => {
                 const section = document.createElement('div');
                 section.className = "mb-4";
-                section.innerHTML = `<h3 class="font-bold text-gray-700 border-l-4 border-blue-400 pl-2 mb-2 sticky top-[8.5rem] bg-[#f3f4f6] z-20 py-1 shadow-sm">${cat.c}</h3>`;
+                section.innerHTML = `<h3 class="font-bold text-gray-700 border-l-4 border-blue-500 pl-2 mb-2 sticky top-[8.5rem] bg-[#f8fafc] z-20 py-1 shadow-sm">${cat.c}</h3>`;
                 const grid = document.createElement('div');
                 grid.className = "grid grid-cols-1 gap-2";
                 cat.i.forEach(item => {
                     const el = document.createElement('div');
-                    el.className = "bg-white p-3 rounded shadow-sm flex justify-between items-center cursor-pointer hover:bg-blue-50 transition border-l-4 border-transparent hover:border-blue-300 active:scale-[0.98]";
+                    el.className = "bg-white p-4 rounded-lg shadow-sm flex justify-between items-center cursor-pointer hover:bg-blue-50 transition border border-gray-100 active:scale-[0.98]";
                     el.onclick = () => openNoteModal(item);
                     el.innerHTML = `<span class="text-gray-800 font-medium">${item.n}</span><span class="font-bold text-blue-600">$${item.p}</span>`;
                     grid.appendChild(el);
@@ -402,43 +512,18 @@
             });
         }
 
-        // --- 客製化 Modal 邏輯 ---
+        // --- 備註 Modal 邏輯 ---
         function openNoteModal(item) {
             tempItem = item;
             document.getElementById('note-item-name').textContent = item.n;
             document.getElementById('note-item-price').textContent = `$${item.p}`;
             
-            // 生成標籤
-            const container = document.getElementById('note-tags-container');
-            container.innerHTML = "";
-            NOTE_OPTIONS.forEach((opt, idx) => {
-                const id = `opt-${idx}`;
-                container.innerHTML += `
-                    <label class="cursor-pointer">
-                        <input type="checkbox" value="${opt}" class="hidden tag-checkbox">
-                        <div class="border rounded py-1 px-2 text-xs text-center text-gray-600 hover:bg-gray-100 transition select-none">${opt}</div>
-                    </label>
-                `;
-            });
-
-            // 重置其他輸入
-            document.getElementById('note-other-check').checked = false;
-            const input = document.getElementById('note-input');
-            input.value = "";
-            input.classList.add('hidden');
-
+            // 重置選項
+            document.querySelectorAll('.option-tag').forEach(el => el.classList.remove('active'));
+            document.getElementById('note-other-input').value = "";
+            document.getElementById('note-other-input').classList.add('hidden');
+            
             document.getElementById('note-modal').classList.remove('hidden');
-        }
-
-        function toggleOtherInput() {
-            const isChecked = document.getElementById('note-other-check').checked;
-            const input = document.getElementById('note-input');
-            if (isChecked) {
-                input.classList.remove('hidden');
-                input.focus();
-            } else {
-                input.classList.add('hidden');
-            }
         }
 
         function closeNoteModal() {
@@ -446,21 +531,39 @@
             tempItem = null;
         }
 
+        function toggleOption(el, group) {
+            // 單選邏輯：同一組只能選一個 (例如只能選一種甜度)
+            const parent = el.parentElement;
+            parent.querySelectorAll('.option-tag').forEach(tag => tag.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function toggleOther(el) {
+            el.classList.toggle('active');
+            const input = document.getElementById('note-other-input');
+            if(el.classList.contains('active')) {
+                input.classList.remove('hidden');
+                input.focus();
+            } else {
+                input.classList.add('hidden');
+            }
+        }
+
         function confirmAddItem() {
             if (!tempItem) return;
             
-            // 收集勾選的標籤
-            const checkedTags = Array.from(document.querySelectorAll('.tag-checkbox:checked')).map(cb => cb.value);
-            
-            // 收集其他備註
-            const otherCheck = document.getElementById('note-other-check').checked;
-            const otherText = document.getElementById('note-input').value.trim();
-            if (otherCheck && otherText) {
-                checkedTags.push(otherText);
-            }
+            // 收集選項
+            let notes = [];
+            document.querySelectorAll('.option-tag.active').forEach(tag => {
+                if(!tag.textContent.includes('其他')) {
+                    notes.push(tag.textContent);
+                }
+            });
+            const otherText = document.getElementById('note-other-input').value.trim();
+            if(otherText) notes.push(otherText);
 
-            const noteString = checkedTags.join(", ");
-            
+            const noteString = notes.join(', ');
+
             myCart.push({ n: tempItem.n, p: tempItem.p, o: noteString });
             
             updateCartBadge();
@@ -477,18 +580,18 @@
             badge.classList.add('scale-100');
         }
 
-        // --- 產生點餐卡 ---
+        // --- 4. 生成與管理 QR ---
         function generateOrderTicket() {
             const name = document.getElementById('myRoleName').value.trim();
             const phone = document.getElementById('myRolePhone').value.trim();
 
-            if (!name || !phone) return Swal.fire('請填寫資料', '記得輸入名字和電話後3碼喔！', 'warning');
-            if (myCart.length === 0) return Swal.fire('購物車空的', '你還沒點餐呢！', 'warning');
+            if (!name || !phone) return Swal.fire('請填寫資料', '輸入名字和電話後3碼', 'warning');
+            if (myCart.length === 0) return Swal.fire('購物車空的', '請先點餐', 'warning');
 
             let total = 0;
             const itemsHtml = myCart.map(i => {
                 total += i.p;
-                const noteHtml = i.o ? `<span class="text-xs text-orange-500 font-bold block ml-2"><i class="fas fa-pen-fancy mr-1"></i>${i.o}</span>` : '';
+                const noteHtml = i.o ? `<span class="text-xs text-orange-500 block ml-2">└ ${i.o}</span>` : '';
                 return `<div class="border-b border-gray-100 pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div>${noteHtml}</div>`;
             }).join("");
 
@@ -510,8 +613,7 @@
         }
 
         function downloadTicket() {
-            const element = document.getElementById('ticket-content');
-            html2canvas(element).then(canvas => {
+            html2canvas(document.getElementById('ticket-content')).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `點餐卡_${document.getElementById('ticket-name').textContent}.png`;
                 link.href = canvas.toDataURL();
@@ -521,10 +623,10 @@
 
         function copyOrderString() {
             const str = document.getElementById('ticket-modal').dataset.orderString;
-            navigator.clipboard.writeText(str).then(() => Swal.fire({icon:'success', title:'代碼已複製', text:'請傳給團長貼上'}));
+            navigator.clipboard.writeText(str).then(() => Swal.fire({icon:'success', title:'代碼已複製', text:'傳給團長貼上即可'}));
         }
 
-        // --- 4. 團長收單邏輯 ---
+        // --- 5. 團長收單 ---
         function startScanner() {
             document.getElementById('scanner-modal').classList.remove('hidden');
             html5QrcodeScanner = new Html5Qrcode("reader");
@@ -543,11 +645,9 @@
         }
 
         function manualImportOrder() {
-            const input = document.getElementById('manualOrderInput');
-            const val = input.value.trim();
-            if(!val) return;
-            onScanSuccess(val, null);
-            input.value = "";
+            const val = document.getElementById('manualOrderInput').value.trim();
+            if(val) onScanSuccess(val, null);
+            document.getElementById('manualOrderInput').value = "";
         }
 
         function onScanSuccess(decodedText, result) {
@@ -556,31 +656,23 @@
                 if (!order.n || !order.d) throw new Error("格式錯誤");
 
                 if(html5QrcodeScanner) html5QrcodeScanner.pause();
-
                 const key = `${order.n}-${order.t}`;
                 
                 if(allOrders[key]) {
                     Swal.fire({
-                        title: '重複訂單！',
-                        text: `${order.n} 已經點過了，要覆蓋嗎？`,
-                        icon: 'question',
-                        showCancelButton: true,
-                        confirmButtonText: '覆蓋',
-                        cancelButtonText: '取消'
+                        title: '重複訂單', text: `${order.n} 已存在，要覆蓋嗎？`, icon: 'question',
+                        showCancelButton: true, confirmButtonText: '覆蓋', cancelButtonText: '取消'
                     }).then((res) => {
                         if(res.isConfirmed) addOrderToSystem(key, order);
                         if(html5QrcodeScanner) html5QrcodeScanner.resume();
                     });
                 } else {
                     addOrderToSystem(key, order);
-                    const Toast = Swal.mixin({toast: true, position: 'center', showConfirmButton: false, timer: 1500});
-                    Toast.fire({icon: 'success', title: `${order.n} 點餐成功！`});
+                    Swal.fire({icon: 'success', title: `${order.n} 加入成功`, timer: 1000, showConfirmButton: false});
                     if(html5QrcodeScanner) html5QrcodeScanner.resume();
                 }
-
             } catch (e) {
-                console.log("Scan ignore", e);
-                if(!html5QrcodeScanner) Swal.fire("錯誤", "無法解析代碼", "error");
+                if(!html5QrcodeScanner) Swal.fire("無效代碼", "請確認格式正確", "error");
             }
         }
 
@@ -594,48 +686,10 @@
             const count = Object.keys(allOrders).length;
             const badge = document.getElementById('orderCountBadge');
             badge.textContent = count;
-            if(count > 0) badge.classList.remove('hidden');
+            badge.classList.toggle('hidden', count === 0);
         }
 
-        // --- 5. 歷史紀錄 & 結算 ---
-        function saveToHistory(data) {
-            if(!data || !data.r) return;
-            let history = JSON.parse(localStorage.getItem('fung_menu_history') || "[]");
-            history = history.filter(h => h.name !== data.r);
-            history.unshift({ name: data.r, data: data, time: Date.now() });
-            if(history.length > 5) history.pop();
-            localStorage.setItem('fung_menu_history', JSON.stringify(history));
-            loadHistoryDropdown();
-        }
-
-        function loadHistoryDropdown() {
-            const history = JSON.parse(localStorage.getItem('fung_menu_history') || "[]");
-            const select = document.getElementById('historySelect');
-            if(history.length === 0) return;
-            
-            document.getElementById('historySection').classList.remove('hidden');
-            select.innerHTML = '<option value="">-- 請選擇歷史餐廳 --</option>';
-            history.forEach((h, index) => {
-                select.innerHTML += `<option value="${index}">${h.name} (${new Date(h.time).toLocaleDateString()})</option>`;
-            });
-        }
-
-        function loadFromHistory(index) {
-            if(index === "") return;
-            const history = JSON.parse(localStorage.getItem('fung_menu_history') || "[]");
-            if(history[index]) {
-                menuData = history[index].data;
-                generateLinkAndShow(false);
-            }
-        }
-
-        function clearHistory() {
-            if(confirm("確定要清除所有歷史菜單？")) {
-                localStorage.removeItem('fung_menu_history');
-                location.reload();
-            }
-        }
-
+        // --- 6. 結算輸出 ---
         function showSummary() {
             const container = document.getElementById('summary-content');
             container.innerHTML = "";
@@ -643,27 +697,27 @@
             const keys = Object.keys(allOrders);
 
             if (keys.length === 0) {
-                container.innerHTML = "<div class='text-center text-gray-400 mt-10'><i class='fas fa-wind text-4xl mb-2'></i><br>還沒有人點餐喔</div>";
+                container.innerHTML = "<div class='text-center text-gray-400 mt-10'><i class='fas fa-clipboard text-4xl mb-2'></i><br>尚無訂單</div>";
             } else {
                 keys.forEach(key => {
                     const order = allOrders[key];
                     const subtotal = order.d.reduce((sum, item) => sum + item.p, 0);
                     grandTotal += subtotal;
 
-                    const itemsHtml = order.d.map(i => {
-                        return `<div class='flex justify-between text-sm text-gray-600 pl-2 border-l-2 border-gray-200'>
-                                    <span>${i.n} ${i.o ? `<span class='text-xs text-orange-500'>(${i.o})</span>` : ''}</span>
-                                    <span>$${i.p}</span>
-                                </div>`;
-                    }).join("");
+                    const itemsHtml = order.d.map(i => 
+                        `<div class='flex justify-between text-sm text-gray-600 pl-2 border-l-2 border-gray-200'>
+                            <span>${i.n} ${i.o ? `<span class='text-xs text-orange-500'>(${i.o})</span>` : ''}</span>
+                            <span>$${i.p}</span>
+                        </div>`
+                    ).join("");
 
                     const div = document.createElement('div');
                     div.className = `p-3 rounded border-2 transition-all ${order.paid ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'}`;
                     div.innerHTML = `
                         <div class="flex justify-between items-center mb-2">
                             <div class="flex items-center gap-2">
-                                <input type="checkbox" class="w-5 h-5 cursor-pointer accent-green-600" ${order.paid ? 'checked' : ''} onchange="togglePaid('${key}')">
-                                <span class="font-bold text-lg ${order.paid ? 'text-green-700 line-through decoration-gray-400' : 'text-gray-800'}">${order.n}</span>
+                                <input type="checkbox" class="w-5 h-5 accent-green-600 cursor-pointer" ${order.paid ? 'checked' : ''} onchange="togglePaid('${key}')">
+                                <span class="font-bold ${order.paid ? 'text-green-700 line-through decoration-gray-400' : 'text-gray-800'}">${order.n}</span>
                             </div>
                             <span class="font-bold text-blue-600">$${subtotal}</span>
                         </div>
@@ -683,47 +737,23 @@
             }
         }
 
-        function pickRandomVictim() {
-            const keys = Object.keys(allOrders);
-            if(keys.length === 0) return Swal.fire('沒人點餐', '無法抽獎', 'info');
-            
-            let timerInterval;
-            Swal.fire({
-                title: '🎲 命運轉盤...',
-                html: '誰是天選之人？ <b></b>',
-                timer: 2000,
-                timerProgressBar: true,
-                didOpen: () => {
-                    Swal.showLoading();
-                    const b = Swal.getHtmlContainer().querySelector('b');
-                    timerInterval = setInterval(() => {
-                        b.textContent = allOrders[keys[Math.floor(Math.random() * keys.length)]].n;
-                    }, 100);
-                },
-                willClose: () => { clearInterval(timerInterval); }
-            }).then(() => {
-                const winner = allOrders[keys[Math.floor(Math.random() * keys.length)]];
-                Swal.fire({icon: 'success', title: `👉 ${winner.n}`, text: '恭喜榮獲「拿外賣/打電話」殊榮！'});
-            });
-        }
-
         function copyForRestaurant() {
             let itemSummary = {};
             let total = 0;
             Object.values(allOrders).forEach(order => {
                 order.d.forEach(item => {
-                    const key = item.n + (item.o ? ` (${item.o})` : '');
-                    if (!itemSummary[key]) itemSummary[key] = { count: 0, price: item.p };
-                    itemSummary[key].count++;
+                    const k = item.n + (item.o ? ` (${item.o})` : '');
+                    if (!itemSummary[k]) itemSummary[k] = { count: 0, price: item.p };
+                    itemSummary[k].count++;
                     total += item.p;
                 });
             });
 
             let text = `📅 訂單：${menuData.r}\n━━━━━━━━━━━━\n`;
-            for (const [name, data] of Object.entries(itemSummary)) {
-                text += `${name} x ${data.count}\n`;
+            for (const [n, d] of Object.entries(itemSummary)) {
+                text += `${n} x ${d.count}\n`;
             }
-            text += `━━━━━━━━━━━━\n💰 總計：$${total}\n\n(LunchCaptain V4.0)`;
+            text += `━━━━━━━━━━━━\n💰 總計：$${total}\n(LunchCaptain)`;
             navigator.clipboard.writeText(text).then(() => Swal.fire('已複製', '可貼給餐廳', 'success'));
         }
 
@@ -732,13 +762,34 @@
             let total = 0;
             let paidCount = 0;
             Object.values(allOrders).forEach(order => {
-                const subtotal = order.d.reduce((s, i) => s + i.p, 0);
-                total += subtotal;
+                total += order.d.reduce((s, i) => s + i.p, 0);
                 if(order.paid) paidCount++;
-                text += `${order.paid ? '✅' : '⬜'} ${order.n}: $${subtotal}\n`;
+                text += `${order.paid ? '✅' : '⬜'} ${order.n}: $${order.d.reduce((s,i)=>s+i.p,0)}\n`;
             });
-            text += `━━━━━━━━━━━━\n💰 總計: $${total}\n(已付: ${paidCount} / 未付: ${Object.keys(allOrders).length - paidCount})\n\nLunchCaptain V4.0`;
-            navigator.clipboard.writeText(text).then(() => Swal.fire('已複製', '可貼到群組收錢', 'success'));
+            text += `━━━━━━━━━━━━\n💰 總計: $${total}\n(已付: ${paidCount} / 未付: ${Object.keys(allOrders).length - paidCount})`;
+            navigator.clipboard.writeText(text).then(() => Swal.fire('已複製', '可貼到群組', 'success'));
+        }
+
+        function pickRandomVictim() {
+            const keys = Object.keys(allOrders);
+            if(keys.length === 0) return Swal.fire('沒人點餐', '', 'info');
+            
+            let timerInterval;
+            Swal.fire({
+                title: '🎲 抽獎中...',
+                html: '天選之人是：<b></b>',
+                timer: 2000,
+                didOpen: () => {
+                    const b = Swal.getHtmlContainer().querySelector('b');
+                    timerInterval = setInterval(() => {
+                        b.textContent = allOrders[keys[Math.floor(Math.random() * keys.length)]].n;
+                    }, 100);
+                },
+                willClose: () => clearInterval(timerInterval)
+            }).then(() => {
+                const winner = allOrders[keys[Math.floor(Math.random() * keys.length)]].n;
+                Swal.fire({ icon: 'success', title: `恭喜 ${winner}！`, text: '負責拿外賣喔！' });
+            });
         }
     </script>
 </body>
