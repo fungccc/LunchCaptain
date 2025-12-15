@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LunchCaptain V3.20 (Fixed)</title>
+    <title>LunchCaptain V3.20 (Hybrid)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
 
     <style>
         body { font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, sans-serif; background-color: #f0f2f5; }
@@ -51,19 +52,16 @@
         #orderQRCode { min-height: 180px; min-width: 180px; display: flex; align-items: center; justify-content: center; }
         
         /* Loading Mask */
-        #wasm-loading { position: fixed; inset: 0; bg-white; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.95); backdrop-filter: blur(5px); transition: opacity 0.5s; }
+        #wasm-loading { position: fixed; inset: 0; z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.98); backdrop-filter: blur(5px); transition: opacity 0.5s; }
+        #wasm-loading.fade-out { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body class="pb-24 flex flex-col min-h-screen">
 
     <div id="wasm-loading">
         <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
-        <h2 class="text-xl font-bold text-gray-800">載入 Brotli 壓縮核心...</h2>
-        <p class="text-sm text-gray-500 mt-2" id="loading-text">連線至 jsDelivr 下載模組中</p>
-        <div id="loading-error-actions" class="hidden mt-6 flex-col gap-3 w-64">
-             <button onclick="location.reload()" class="btn btn-primary w-full">重試連線</button>
-             <button onclick="window.forceLZStringMode()" class="btn btn-outline w-full text-xs">切換回 LZString (舊版模式)</button>
-        </div>
+        <h2 class="text-xl font-bold text-gray-800" id="loading-text">啟動核心引擎...</h2>
+        <p class="text-xs text-gray-400 mt-2 font-mono" id="loading-sub">Mode: Auto Detect</p>
     </div>
 
     <header class="bg-slate-900 text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center">
@@ -71,7 +69,7 @@
             <div class="bg-blue-600 p-2 rounded-lg mr-3"><i class="fas fa-utensils text-white"></i></div>
             <div>
                 <h1 class="text-lg font-bold tracking-wide leading-tight">LunchCaptain</h1>
-                <p class="text-[10px] text-gray-400" id="version-label">團長救星 v3.20 (Brotli)</p>
+                <p class="text-[10px] text-gray-400">團長救星 v3.20 (Hybrid)</p>
             </div>
         </div>
         <div id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></div>
@@ -103,8 +101,6 @@
                     <option value="Japanese">3. 日文</option>
                     <option value="Korean">4. 韓文</option>
                     <option value="Thai">5. 泰文</option>
-                    <option value="Vietnamese">6. 越南文</option>
-                    <option value="French">7. 法文</option>
                 </select>
             </div>
 
@@ -270,71 +266,55 @@
     </nav>
 
     <script type="module">
-        // 改用 jsDelivr，且使用動態載入以處理錯誤
-        let init, compress, decompress;
-        let isBrotliReady = false;
-        let useLZStringFallback = false;
+        // 改用 esm.sh CDN，它對 Module 的封裝比 unpkg 更穩定
+        import init, { compress, decompress } from 'https://esm.sh/brotli-wasm@3.0.1';
 
-        async function initBrotli() {
-            // 設定逾時，避免畫面永久卡死
-            const timeoutPromise = new Promise((_, reject) => 
-                setTimeout(() => reject(new Error("Timeout")), 6000)
-            );
+        let compressionMode = 'LZSTRING'; // 預設降級模式，直到 WASM 成功
+        let isReady = false;
 
+        async function initHybridSystem() {
             try {
-                // 嘗試從 jsDelivr 下載
-                // 注意：這裡直接指定 .wasm 檔案的完整路徑，避免解析錯誤
-                const module = await Promise.race([
-                    import('https://cdn.jsdelivr.net/npm/brotli-wasm@3.0.1/index.web.js'),
-                    timeoutPromise
-                ]);
+                // 自動判斷 init 是 Promise 還是 Function (解決 Image 1 的報錯)
+                if (typeof init === 'function') {
+                    await init(); 
+                } else {
+                    await init; // 當 init 已經是 Instance 時直接 await
+                }
 
-                init = module.default;
-                compress = module.compress;
-                decompress = module.decompress;
-
-                // 明確載入 WASM 檔案
-                await init('https://cdn.jsdelivr.net/npm/brotli-wasm@3.0.1/brotli_wasm_bg.wasm');
-                
-                isBrotliReady = true;
-                onSystemReady();
-                
+                // 測試功能是否正常
+                const test = compress(new TextEncoder().encode("ok"));
+                if(test.length > 0) {
+                    compressionMode = 'BROTLI';
+                    document.getElementById('loading-text').innerText = "Brotli 核心就緒";
+                    document.getElementById('loading-sub').innerText = "High Compression Mode";
+                }
             } catch (e) {
-                console.error("Brotli Load Failed:", e);
-                const loader = document.getElementById('loading-text');
-                const actions = document.getElementById('loading-error-actions');
-                loader.innerHTML = `<span class="text-red-500 font-bold">載入失敗: ${e.message}</span>`;
-                actions.classList.remove('hidden');
-                actions.classList.add('flex');
+                console.warn("WASM Init Failed, Fallback to LZString", e);
+                document.getElementById('loading-text').innerText = "使用相容模式";
+                document.getElementById('loading-sub').innerText = "LZString Mode Active";
+            } finally {
+                // 隱藏 Loading 畫面
+                setTimeout(() => {
+                    document.getElementById('wasm-loading').classList.add('fade-out');
+                    isReady = true;
+                }, 500);
+
+                // 檢查網址參數
+                const params = new URLSearchParams(window.location.search);
+                const compressedMenu = params.get('menu');
+                if (compressedMenu) window.initGuestMode(compressedMenu);
+                else window.initCaptainMode();
             }
         }
 
-        function onSystemReady() {
-            const loadingDiv = document.getElementById('wasm-loading');
-            loadingDiv.style.opacity = '0';
-            setTimeout(() => loadingDiv.style.display = 'none', 500);
-
-            const params = new URLSearchParams(window.location.search);
-            const compressedMenu = params.get('menu');
-            if (compressedMenu) window.initGuestMode(compressedMenu);
-            else window.initCaptainMode();
-        }
-
-        // 萬一 Brotli 真的掛了，強制降級回 LZString
-        window.forceLZStringMode = function() {
-            useLZStringFallback = true;
-            document.getElementById('version-label').textContent = "團長救星 v3.20 (LZString Backup)";
-            onSystemReady();
-        };
-
         // ============================================
-        // 輔助工具: Base64 <-> Uint8Array
+        // 2. 輔助工具: Base64 <-> Uint8Array
         // ============================================
         function uint8ArrayToBase64(bytes) {
             let binary = '';
             const len = bytes.byteLength;
             for (let i = 0; i < len; i++) binary += String.fromCharCode(bytes[i]);
-            return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); 
+            return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
         }
 
         function base64ToUint8Array(base64) {
@@ -348,33 +328,24 @@
         }
 
         // ============================================
-        // 核心變數
-        // ============================================
-        let currentAI = 'gemini';
-        let menuData = null;
-        let myCart = []; 
-        let allOrders = {}; 
-        let html5QrcodeScanner = null;
-        let tempItem = null; 
-        let userInfo = { name: '', phone: '' };
-        let isCaptainMode = false;
-        
-        const optMap = { "少辣":"a", "中辣":"b", "大辣":"c", "走冰":"d", "少冰":"e", "多冰":"f", "走甜":"g", "少甜":"h", "半糖":"i", "走奶":"j", "走蔥":"k", "走芫荽":"l" };
-        const revOptMap = Object.fromEntries(Object.entries(optMap).map(a => a.reverse()));
-
-        // ============================================
-        // 壓縮/解壓縮 邏輯 (支援降級)
+        // 3. 混合壓縮/解壓縮 封裝 (Hybrid Wrapper)
         // ============================================
         window.generateLinkAndShow = function() {
+            if (!isReady) return Swal.fire("請稍候", "核心初始化中...", "info");
+            
             try {
                 let compressedString = "";
-                if (useLZStringFallback) {
-                    compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(menuData));
-                } else {
-                    if (!isBrotliReady) return Swal.fire("錯誤", "核心模組尚未載入", "error");
+                
+                if (compressionMode === 'BROTLI') {
+                    // Brotli 模式
                     const jsonStr = JSON.stringify(menuData);
-                    const compressedBytes = compress(new TextEncoder().encode(jsonStr));
-                    compressedString = uint8ArrayToBase64(compressedBytes);
+                    const inputBytes = new TextEncoder().encode(jsonStr);
+                    const compressedBytes = compress(inputBytes);
+                    // 前綴 'B' 代表 Brotli，方便未來識別
+                    compressedString = 'B' + uint8ArrayToBase64(compressedBytes);
+                } else {
+                    // LZString 模式 (備案)
+                    compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(menuData));
                 }
 
                 const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressedString}`;
@@ -384,53 +355,52 @@
                 document.getElementById('setup-panel').classList.add('hidden');
                 document.getElementById('share-panel').classList.remove('hidden');
             } catch (e) {
-                console.error(e);
                 Swal.fire('壓縮失敗', e.message, 'error');
             }
         };
 
         window.shareMenuWhatsapp = function() {
+            if (!isReady) return;
             let compressedString = "";
-            if (useLZStringFallback) {
-                compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(menuData));
-            } else {
-                if (!isBrotliReady) return;
+            if (compressionMode === 'BROTLI') {
                 const jsonStr = JSON.stringify(menuData);
-                const compressedBytes = compress(new TextEncoder().encode(jsonStr));
-                compressedString = uint8ArrayToBase64(compressedBytes);
+                compressedString = 'B' + uint8ArrayToBase64(compress(new TextEncoder().encode(jsonStr)));
+            } else {
+                compressedString = LZString.compressToEncodedURIComponent(JSON.stringify(menuData));
             }
             const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressedString}`;
             window.location.href = `whatsapp://send?text=${encodeURIComponent("來點餐吧！" + shareUrl)}`;
         };
 
         window.initGuestMode = function(compressed) {
+            if (!isReady) { setTimeout(()=>window.initGuestMode(compressed), 200); return; } // 等待初始化
+            
             try {
-                // 嘗試自動偵測
-                // 如果是 Brotli，通常解壓 LZString 會失敗 (或回傳 null)，反之亦然
-                let jsonStr = null;
-
-                // 優先嘗試 Brotli (如果 Ready)
-                if (isBrotliReady && !useLZStringFallback) {
+                // 自動偵測格式
+                if (compressed.startsWith('B')) {
+                    // Brotli 格式 (移除前綴 'B')
+                    const realCompressed = compressed.substring(1);
+                    const compressedBytes = base64ToUint8Array(realCompressed);
+                    const decompressedBytes = decompress(compressedBytes);
+                    const jsonStr = new TextDecoder().decode(decompressedBytes);
+                    menuData = JSON.parse(jsonStr);
+                } else {
+                    // LZString 格式 (舊版或 fallback)
+                    // 嘗試 Brotli 解壓失敗會拋錯，我們捕捉後嘗試 LZString
                     try {
-                        const compressedBytes = base64ToUint8Array(compressed);
-                        const decompressedBytes = decompress(compressedBytes);
-                        jsonStr = new TextDecoder().decode(decompressedBytes);
-                    } catch (e) { console.log("Brotli decode failed, trying LZString..."); }
-                }
-
-                // 如果 Brotli 失敗或沒準備好，嘗試 LZString
-                if (!jsonStr) {
-                    jsonStr = LZString.decompressFromEncodedURIComponent(compressed);
-                    if (jsonStr) {
-                        console.log("Fallback to LZString success");
-                        useLZStringFallback = true;
-                        document.getElementById('version-label').textContent = "團長救星 v3.20 (Legacy)";
+                        // 有些舊連結可能沒有前綴，先試 LZString
+                        menuData = JSON.parse(LZString.decompressFromEncodedURIComponent(compressed));
+                        if(!menuData) throw new Error();
+                    } catch(err) {
+                        // 如果 LZString 也不行，可能是裸 Brotli (舊版)
+                        const cb = base64ToUint8Array(compressed);
+                        const db = decompress(cb);
+                        menuData = JSON.parse(new TextDecoder().decode(db));
                     }
                 }
 
-                if (!jsonStr) throw new Error("Format unknown");
+                if (!menuData) throw new Error("資料為空");
 
-                menuData = JSON.parse(jsonStr);
                 isCaptainMode = false;
                 document.getElementById('roleBadge').textContent = "點餐模式";
                 document.getElementById('roleBadge').classList.remove('hidden');
@@ -448,8 +418,21 @@
         };
 
         // ============================================
-        // 應用程式一般邏輯
+        // 4. 應用程式變數與邏輯
         // ============================================
+        let currentAI = 'gemini';
+        let menuData = null;
+        let myCart = []; 
+        let allOrders = {}; 
+        let html5QrcodeScanner = null;
+        let tempItem = null; 
+        let userInfo = { name: '', phone: '' };
+        let isCaptainMode = false;
+        
+        const optMap = { "少辣":"a", "中辣":"b", "大辣":"c", "走冰":"d", "少冰":"e", "多冰":"f", "走甜":"g", "少甜":"h", "半糖":"i", "走奶":"j", "走蔥":"k", "走芫荽":"l" };
+        const revOptMap = Object.fromEntries(Object.entries(optMap).map(a => a.reverse()));
+
+        // Expose functions to window
         window.confirmHome = function() { if(myCart.length > 0 && !confirm("購物車還有餐點，確定要回到首頁嗎？")) return; location.href = location.pathname.split('#')[0]; };
         
         window.initCaptainMode = function() {
@@ -671,8 +654,9 @@
             try {
                 let order = {};
                 const data = JSON.parse(decodedText);
-                if (Array.isArray(data)) order = { n: data[0], t: data[1], d: data[2].map(x => ({ i: x[0], o: x[1] })) };
-                else order = data;
+                if (Array.isArray(data)) {
+                    order = { n: data[0], t: data[1], d: data[2].map(x => ({ i: x[0], o: x[1] })) };
+                } else { order = data; }
                 if (!order.n || !order.d) throw new Error();
                 if(html5QrcodeScanner) html5QrcodeScanner.pause();
                 window.addOrderToSystem(`${order.n}-${order.t}`, order);
@@ -733,8 +717,9 @@
         };
         window.shareSystem = async function() { if(navigator.share) await navigator.share({title:'點餐', text:`餐廳:${menuData.r}`, url:window.location.href}); else Swal.fire('不支援', '', 'info'); };
 
+        // 啟動!
         window.onload = function() {
-            initBrotli();
+            initHybridSystem();
             if(window.location.hash === "#import_menu") { document.getElementById('setup-panel').scrollIntoView(); document.getElementById('jsonInput').focus(); history.replaceState(null, null, ' '); }
         };
     </script>
