@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LunchCaptain V3.16</title>
+    <title>LunchCaptain V3.17 (JSONCrush)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -74,7 +75,7 @@
             </div>
             <div>
                 <h1 class="text-lg font-bold tracking-wide leading-tight">LunchCaptain</h1>
-                <p class="text-[10px] text-gray-400">團長救星 v3.16</p>
+                <p class="text-[10px] text-gray-400">團長救星 v3.17 (JSONCrush)</p>
             </div>
         </div>
         <div id="roleBadge" class="bg-yellow-400 text-black text-xs px-2 py-1 rounded font-bold hidden shadow"></div>
@@ -315,7 +316,15 @@
     </nav>
 
     <script>
-        // 核心變數
+        // ============================================
+        // 1. JSONCrush 壓縮演算法 (Minified Version)
+        // ============================================
+        const JSONCrush=e=>{const r=e.length;if(0===r)return"";let n,t,o,i,s,a=[],c=[],u=(e,r,n)=>e.split(r).join(n).split(n).join(r);for(n=0;n<255;n++)if(t=String.fromCharCode(n),-1===e.indexOf(t)&&(c.push(t),c.length>122))break;for(n=255;n<r;n++)if(t=String.fromCharCode(n),-1===e.indexOf(t)&&(a.push(t),a.length>122))break;for(i=u(e,c,a),s=e.length,n=i.length-1;n>1;n--){let e=i.substring(0,n),r=i.substring(n).match(new RegExp(((e)=>e.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\'\"]/g,"\\$&"))(e),"g"));r&&r.length>1&&(o=e.length*r.length-e.length-r.length-1,o>0&&(t=e,s=o))}return t?(e=e.split(t).join(c.pop())+c.pop()+t,JSONCrush(e)):encodeURIComponent(e)};
+        const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e++){let r=String.fromCharCode(e);n.push(r)}for(let e=255;e<r.length;e++){let t=String.fromCharCode(e);n.push(t)}let t=r.match(/[\u0000-\u00FF\u00FF-\uFFFF]{1}/g);if(!t)return r;let o=t.pop(),i=t.pop();return r.split(i).join(o).split(o).join(i)};
+
+        // ============================================
+        // 2. 核心變數與初始化
+        // ============================================
         let currentAI = 'gemini';
         let menuData = null;
         let myCart = []; 
@@ -324,22 +333,12 @@
         let tempItem = null; 
         let userInfo = { name: '', phone: '' };
         let isCaptainMode = false;
-        // 選項壓縮字典
+        
         const optMap = { "少辣":"a", "中辣":"b", "大辣":"c", "走冰":"d", "少冰":"e", "多冰":"f", "走甜":"g", "少甜":"h", "半糖":"i", "走奶":"j", "走蔥":"k", "走芫荽":"l" };
         const revOptMap = Object.fromEntries(Object.entries(optMap).map(a => a.reverse()));
 
         window.addEventListener('beforeunload', function (e) { if (myCart.length > 0) { e.preventDefault(); e.returnValue = ''; } });
         function confirmHome() { if(myCart.length > 0 && !confirm("購物車還有餐點，確定要回到首頁嗎？")) return; location.href = location.pathname.split('#')[0]; }
-
-
-
-// ================= JSONCrush 核心代碼 (開始) =================
-const JSONCrush=e=>{const r=e.length;if(0===r)return"";let n,t,o,i,s,a=[],c=[],u=(e,r,n)=>e.split(r).join(n).split(n).join(r);for(n=0;n<255;n++)if(t=String.fromCharCode(n),-1===e.indexOf(t)&&(c.push(t),c.length>122))break;for(n=255;n<r;n++)if(t=String.fromCharCode(n),-1===e.indexOf(t)&&(a.push(t),a.length>122))break;for(i=u(e,c,a),s=e.length,n=i.length-1;n>1;n--){let e=i.substring(0,n),r=i.substring(n).match(new RegExp(((e)=>e.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|\'\"]/g,"\\$&"))(e),"g"));r&&r.length>1&&(o=e.length*r.length-e.length-r.length-1,o>0&&(t=e,s=o))}return t?(e=e.split(t).join(c.pop())+c.pop()+t,JSONCrush(e)):encodeURIComponent(e)};
-
-const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e++){let r=String.fromCharCode(e);n.push(r)}for(let e=255;e<r.length;e++){let t=String.fromCharCode(e);n.push(t)}let t=r.match(/[\u0000-\u00FF\u00FF-\uFFFF]{1}/g);if(!t)return r;let o=t.pop(),i=t.pop();return r.split(i).join(o).split(o).join(i)};
-// ================= JSONCrush 核心代碼 (結束) =================
-
-
         
         window.onload = function() {
             if(window.location.hash === "#import_menu") { document.getElementById('setup-panel').scrollIntoView(); document.getElementById('jsonInput').focus(); history.replaceState(null, null, ' '); }
@@ -390,7 +389,7 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
                 if (!jsonMatch) throw new Error("無效 JSON");
                 menuData = JSON.parse(jsonMatch[0]);
                 if (!menuData.m) throw new Error("格式錯誤");
-                // V3.16: 自動分配 ID
+                // 自動分配 ID
                 let gId = 0;
                 menuData.m.forEach(c => c.i.forEach(i => i._id = (gId++).toString(36))); // Base36 ID
                 saveToHistory(menuData);
@@ -417,27 +416,37 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
         function loadFromHistory(idx) {
             if(idx === "") return;
             menuData = JSON.parse(localStorage.getItem('lunch_captain_history'))[idx].data;
-            // 確保舊資料也有 ID
             let gId = 0;
             menuData.m.forEach(c => c.i.forEach(i => { if(!i._id) i._id = (gId++).toString(36); else gId++; }));
             generateLinkAndShow();
         }
         function clearHistory() { if(confirm('清除紀錄？')) { localStorage.removeItem('lunch_captain_history'); location.reload(); } }
 
+        // ============================================
+        // 3. 修改處：使用 JSONCrush 壓縮
+        // ============================================
         function generateLinkAndShow() {
-            // JSONCrush 自帶 encodeURIComponent，所以直接呼叫即可
-	    const compressed = JSONCrush(JSON.stringify(menuData));
-            const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressed}`;
-            document.getElementById('shareTitle').textContent = menuData.r;
-            const qr = document.getElementById('menuQRCode'); qr.innerHTML = "";
-            new QRCode(qr, { text: shareUrl, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.L });
-            document.getElementById('setup-panel').classList.add('hidden');
-            document.getElementById('share-panel').classList.remove('hidden');
+            try {
+                // 使用 JSONCrush 替代 LZString
+                const compressed = JSONCrush(JSON.stringify(menuData));
+                const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressed}`;
+                
+                document.getElementById('shareTitle').textContent = menuData.r;
+                const qr = document.getElementById('menuQRCode'); qr.innerHTML = "";
+                // 生成 QR Code
+                new QRCode(qr, { text: shareUrl, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.L });
+                
+                document.getElementById('setup-panel').classList.add('hidden');
+                document.getElementById('share-panel').classList.remove('hidden');
+            } catch (e) {
+                console.error(e);
+                Swal.fire('錯誤', 'QR Code 生成失敗: ' + e.message, 'error');
+            }
         }
         
         function shareMenuWhatsapp() {
-            // JSONCrush 自帶 encodeURIComponent，所以直接呼叫即可
-	    const compressed = JSONCrush(JSON.stringify(menuData));
+            // 使用 JSONCrush 替代 LZString
+            const compressed = JSONCrush(JSON.stringify(menuData));
             const shareUrl = `${window.location.origin}${window.location.pathname}?menu=${compressed}`;
             window.location.href = `whatsapp://send?text=${encodeURIComponent("來點餐吧！" + shareUrl)}`;
         }
@@ -459,10 +468,14 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
             renderMenu();
         }
 
+        // ============================================
+        // 4. 修改處：使用 JSONUncrush 解壓縮
+        // ============================================
         function initGuestMode(compressed) {
             try {
-		// 先解壓縮字串，再轉回 JSON 物件
-		menuData = JSON.parse(JSONUncrush(compressed));
+                // 使用 JSONUncrush 替代 LZString
+                menuData = JSON.parse(JSONUncrush(compressed));
+                
                 isCaptainMode = false;
                 document.getElementById('roleBadge').textContent = "點餐模式";
                 document.getElementById('roleBadge').classList.remove('hidden');
@@ -473,7 +486,10 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
                 const savedUser = localStorage.getItem('lunch_captain_user');
                 if(savedUser) { userInfo = JSON.parse(savedUser); updateUserDisplay(); }
                 renderMenu();
-            } catch (e) { Swal.fire('錯誤', '連結無效', 'error'); }
+            } catch (e) { 
+                console.error(e);
+                Swal.fire('錯誤', '連結無效或格式不符', 'error'); 
+            }
         }
 
         function renderMenu() {
@@ -516,7 +532,6 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
             let notes = [];
             document.querySelectorAll('.option-tag.active').forEach(tag => { 
                 const t = tag.innerText.trim();
-                // V3.16: 編碼化
                 notes.push(optMap[t] || t);
             });
             const other = document.getElementById('note-other-input').value.trim(); if(other) notes.push(other);
@@ -548,7 +563,6 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
             const list = document.getElementById('cart-list'); list.innerHTML = ""; let total = 0;
             myCart.forEach((item, idx) => {
                 total += item.p;
-                // 解碼顯示
                 const noteDisplay = item.o.split(',').map(c => revOptMap[c] || c).filter(c=>c).join(', ');
                 list.innerHTML += `<div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-100 mb-2"><div class="flex-1"><div class="font-bold text-gray-800 text-sm">${item.n}</div><div class="text-xs text-orange-500">${noteDisplay}</div><div class="text-xs text-blue-600 font-bold">$${item.p}</div></div><button onclick="removeFromCart(${idx})" class="text-red-400 p-2"><i class="fas fa-trash-alt"></i></button></div>`;
             });
@@ -569,14 +583,12 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
         function finalSubmit() {
             closeCartModal();
             if (isCaptainMode) {
-                // 團長也是用 _id 邏輯
-                const items = myCart.map(m => ({ i: m._id, o: m.o })); // 模擬 payload 結構
+                const items = myCart.map(m => ({ i: m._id, o: m.o }));
                 addOrderToSystem(`${userInfo.name}-${userInfo.phone}`, { n:userInfo.name, t:userInfo.phone, d:items });
                 myCart = []; updateCartBadge(); Swal.fire('成功', '已加入總表', 'success');
             } else generateOrderTicket();
         }
 
-        // V3.16 核心：產生極簡 Payload
         function generateOrderTicket() {
             let total = 0;
             const itemsHtml = myCart.map(i => {
@@ -585,7 +597,6 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
                 return `<div class="border-b pb-1 mb-1"><div class="flex justify-between"><span>${i.n}</span><span>$${i.p}</span></div><span class="text-xs text-orange-500">${displayNote}</span></div>`;
             }).join("");
             
-            // Payload: [Name, Phone, [[ID, Notes], ...]]
             const simpleItems = myCart.map(m => [m._id, m.o]); 
             const payload = [userInfo.name, userInfo.phone, simpleItems];
             const orderStr = JSON.stringify(payload);
@@ -602,17 +613,14 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
             setTimeout(() => new QRCode(qr, { text: orderStr, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.L }), 100);
         }
 
-        // V3.16: 解析極簡 Payload
         function onScanSuccess(decodedText) {
             try {
                 let order = {};
                 const data = JSON.parse(decodedText);
-                
-                // 判斷是否為 V3.16 陣列格式
                 if (Array.isArray(data)) {
                     order = { n: data[0], t: data[1], d: data[2].map(x => ({ i: x[0], o: x[1] })) };
                 } else {
-                    order = data; // 相容舊版 JSON
+                    order = data; 
                 }
 
                 if (!order.n || !order.d) throw new Error();
@@ -624,7 +632,6 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
             } catch (e) { if(!html5QrcodeScanner) Swal.fire("格式錯誤", "請確認代碼", "error"); }
         }
 
-        // 共用與掃描
         function updateUserDisplay() { document.getElementById('displayRoleName').textContent = userInfo.name; document.getElementById('displayRolePhone').textContent = userInfo.phone; document.getElementById('guestInfoDisplay').classList.remove('hidden'); }
         function resetGuestInfo() { userInfo = { name: '', phone: '' }; localStorage.removeItem('lunch_captain_user'); document.getElementById('guestInfoDisplay').classList.add('hidden'); Swal.fire('已重置', '請重新輸入資料', 'info'); }
         function copyTicketCode() { const c = document.getElementById('ticket-raw-code'); c.select(); document.execCommand("copy"); Swal.fire('已複製', '', 'success'); }
@@ -636,15 +643,12 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
         function manualImportOrder() { const v = document.getElementById('manualOrderInput').value.trim(); if(v) onScanSuccess(v); document.getElementById('manualOrderInput').value = ""; }
 
         function addOrderToSystem(key, orderData) {
-            // 需要將 ID 轉回完整資料供總表顯示
-            // 建立 ID 對照表
             const idMap = {};
             menuData.m.forEach(c => c.i.forEach(it => idMap[it._id] = it));
             
             const fullItems = orderData.d.map(item => {
                 const ref = idMap[item.i];
                 if (!ref) return null;
-                // 解碼選項
                 const noteDisplay = (item.o || "").split(',').map(c => revOptMap[c] || c).filter(c=>c).join(', ');
                 return { n: ref.n, p: ref.p, o: noteDisplay };
             }).filter(i => i);
@@ -656,7 +660,6 @@ const JSONUncrush=e=>{let r=decodeURIComponent(e);const n=[];for(let e=0;e<255;e
             if(!document.getElementById('summary-panel').classList.contains('hidden')) showSummary();
         }
 
-        // 其他功能同前...
         function updateOrderBadge() { const c = Object.keys(allOrders).length; document.getElementById('orderCountBadge').innerText = c; document.getElementById('orderCountBadge').style.display = c>0?'flex':'none'; }
         function showSummary() {
             const c = document.getElementById('summary-content'); c.innerHTML = ""; let gt = 0;
